@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agent 管理 - Hunter Agent 管理系统</title>
+    <title>Skills - Hunter Agent 管理系统</title>
     <style>
         * {
             margin: 0;
@@ -25,12 +25,14 @@
             min-height: 100vh;
         }
         
+        /* Sidebar */
         .sidebar {
             width: 280px;
             background: rgba(255, 255, 255, 0.72);
             backdrop-filter: saturate(180%) blur(20px);
             -webkit-backdrop-filter: saturate(180%) blur(20px);
             border-right: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 0;
             position: fixed;
             height: 100vh;
             overflow-y: auto;
@@ -39,6 +41,8 @@
         .sidebar-header {
             padding: 20px 24px;
             border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
         }
         
         .logo {
@@ -84,9 +88,11 @@
             font-size: 18px;
         }
         
+        /* Main Content */
         .main-content {
             flex: 1;
             margin-left: 280px;
+            padding: 0;
         }
         
         .top-bar {
@@ -133,6 +139,7 @@
             padding: 40px;
         }
         
+        /* Stats Cards */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -177,6 +184,11 @@
             color: #34c759;
         }
         
+        .stat-change.negative {
+            color: #ff3b30;
+        }
+        
+        /* Toolbar */
         .toolbar {
             display: flex;
             align-items: center;
@@ -272,6 +284,7 @@
             background: rgba(255, 255, 255, 1);
         }
         
+        /* Skills Table */
         .table-container {
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: saturate(180%) blur(20px);
@@ -311,37 +324,38 @@
             background: rgba(0, 0, 0, 0.02);
         }
         
-        .agent-name {
+        .skill-name {
             display: flex;
             align-items: center;
             gap: 12px;
         }
         
-        .agent-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
+        .skill-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 18px;
         }
         
-        .agent-avatar.blue { background: rgba(0, 122, 255, 0.12); }
-        .agent-avatar.green { background: rgba(52, 199, 89, 0.12); }
-        .agent-avatar.orange { background: rgba(255, 149, 0, 0.12); }
-        .agent-avatar.purple { background: rgba(175, 82, 222, 0.12); }
+        .skill-icon.blue { background: rgba(0, 122, 255, 0.12); color: #007aff; }
+        .skill-icon.green { background: rgba(52, 199, 89, 0.12); color: #34c759; }
+        .skill-icon.orange { background: rgba(255, 149, 0, 0.12); color: #ff9500; }
+        .skill-icon.purple { background: rgba(175, 82, 222, 0.12); color: #af52de; }
+        .skill-icon.red { background: rgba(255, 59, 48, 0.12); color: #ff3b30; }
         
-        .agent-info {
+        .skill-info {
             flex: 1;
         }
         
-        .agent-title {
+        .skill-title {
             font-weight: 600;
             margin-bottom: 2px;
         }
         
-        .agent-desc {
+        .skill-desc {
             font-size: 13px;
             color: #86868b;
         }
@@ -356,19 +370,14 @@
             font-weight: 500;
         }
         
-        .status-badge.online {
+        .status-badge.active {
             background: rgba(52, 199, 89, 0.12);
             color: #34c759;
         }
         
-        .status-badge.offline {
+        .status-badge.inactive {
             background: rgba(142, 142, 147, 0.12);
             color: #8e8e93;
-        }
-        
-        .status-badge.busy {
-            background: rgba(255, 149, 0, 0.12);
-            color: #ff9500;
         }
         
         .status-dot {
@@ -399,6 +408,7 @@
             color: #1d1d1f;
         }
         
+        /* Pagination */
         .pagination {
             display: flex;
             align-items: center;
@@ -443,122 +453,6 @@
             opacity: 0.5;
             cursor: not-allowed;
         }
-        
-        /* Modal */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(10px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-        
-        .modal-overlay.active {
-            display: flex;
-        }
-        
-        .modal {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: saturate(180%) blur(20px);
-            border-radius: 20px;
-            width: 100%;
-            max-width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
-        
-        .modal-header {
-            padding: 24px;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .modal-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1d1d1f;
-        }
-        
-        .modal-close {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: none;
-            background: rgba(0, 0, 0, 0.05);
-            color: #1d1d1f;
-            cursor: pointer;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-        
-        .modal-close:hover {
-            background: rgba(0, 0, 0, 0.1);
-        }
-        
-        .modal-body {
-            padding: 24px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: #86868b;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 8px;
-        }
-        
-        .form-input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 400;
-            color: #1d1d1f;
-            transition: all 0.2s ease;
-        }
-        
-        .form-input:focus {
-            outline: none;
-            border-color: #007aff;
-            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
-        }
-        
-        .form-select {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            font-size: 14px;
-            background: white;
-            cursor: pointer;
-        }
-        
-        .modal-footer {
-            padding: 24px;
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-        }
     </style>
 </head>
 <body>
@@ -568,16 +462,17 @@
             <div class="sidebar-header">
                 <div class="logo"> Hunter</div>
             </div>
+            
             <nav class="nav-section">
                 <a href="dashboard.html" class="nav-item">
                     <span class="nav-icon">📊</span>
                     <span>Dashboard</span>
                 </a>
-                <a href="agents.html" class="nav-item active">
+                <a href="agents.html" class="nav-item">
                     <span class="nav-icon">🤖</span>
                     <span>Agent 管理</span>
                 </a>
-                <a href="skills.html" class="nav-item">
+                <a href="skills.html" class="nav-item active">
                     <span class="nav-icon">⚡</span>
                     <span>Skill 管理</span>
                 </a>
@@ -594,191 +489,254 @@
 
         <!-- Main Content -->
         <main class="main-content">
+            <!-- Top Bar -->
             <header class="top-bar">
-                <h1 class="page-title">🤖 Agent 管理</h1>
+                <h1 class="page-title">⚡ Skill 管理</h1>
                 <div class="user-menu">
+                    <button class="btn btn-secondary">
+                        <span>🔔</span>
+                    </button>
                     <div class="avatar">D</div>
                     <span style="font-weight: 500;">Diwei</span>
                 </div>
             </header>
 
+            <!-- Content Area -->
             <div class="content-area">
+                <!-- Stats -->
                 <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-label">Total Agents</div>
-                        <div class="stat-value">15</div>
-                        <div class="stat-change"> +2 本周</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Online</div>
-                        <div class="stat-value">12</div>
-                        <div class="stat-change">80% 在线率</div>
-                    </div>
                     <div class="stat-card">
                         <div class="stat-label">Total Skills</div>
                         <div class="stat-value">24</div>
-                        <div class="stat-change">人均 1.6 Skills</div>
+                        <div class="stat-change"> +4 本周</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Heartbeat</div>
-                        <div class="stat-value">30s</div>
-                        <div class="stat-change">正常</div>
+                        <div class="stat-label">Active Skills</div>
+                        <div class="stat-value">18</div>
+                        <div class="stat-change">75% 使用率</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total Calls</div>
+                        <div class="stat-value">12,456</div>
+                        <div class="stat-change"> +1,234 今日</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Avg Response</div>
+                        <div class="stat-value">1.2s</div>
+                        <div class="stat-change"> -0.3s 优化</div>
                     </div>
                 </div>
 
+                <!-- Toolbar -->
                 <div class="toolbar">
                     <div class="search-box">
                         <span class="search-icon">🔍</span>
-                        <input type="text" class="search-input" placeholder="搜索 Agent...">
+                        <input type="text" class="search-input" placeholder="搜索 Skill...">
                     </div>
                     <div class="filter-group">
                         <select class="filter-select">
                             <option>全部类型</option>
-                            <option>A2A</option>
-                            <option>MCP</option>
-                            <option>Local</option>
+                            <option>获客</option>
+                            <option>风控</option>
+                            <option>贷后</option>
+                            <option>数据</option>
                         </select>
                         <select class="filter-select">
                             <option>全部状态</option>
-                            <option>Online</option>
-                            <option>Offline</option>
-                            <option>Busy</option>
+                            <option>Active</option>
+                            <option>Inactive</option>
                         </select>
                         <button class="btn btn-secondary">
                             <span>🔄</span> 刷新
                         </button>
-                        <button class="btn btn-primary" onclick="showNewAgentModal()">
-                            <span>+</span> 新建 Agent
+                        <button class="btn btn-primary" onclick="showNewSkillModal()">
+                            <span>+</span> 新建 Skill
                         </button>
                     </div>
                 </div>
 
+                <!-- Skills Table -->
                 <div class="table-container">
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Agent</th>
+                                <th>Skill</th>
                                 <th>类型</th>
-                                <th>Skills</th>
+                                <th>调用次数</th>
+                                <th>响应时间</th>
                                 <th>状态</th>
-                                <th>最后心跳</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>
-                                    <div class="agent-name">
-                                        <div class="agent-avatar blue">📱</div>
-                                        <div class="agent-info">
-                                            <div class="agent-title">FB 社群监控 Agent</div>
-                                            <div class="agent-desc">监控 Facebook 群组借贷相关内容</div>
+                                    <div class="skill-name">
+                                        <div class="skill-icon blue">📱</div>
+                                        <div class="skill-info">
+                                            <div class="skill-title">FB 社群监控</div>
+                                            <div class="skill-desc">监控 Facebook 群组借贷相关内容</div>
                                         </div>
                                     </div>
                                 </td>
-                                <td>A2A</td>
-                                <td>3</td>
+                                <td>获客</td>
+                                <td>3,456</td>
+                                <td>1.2s</td>
                                 <td>
-                                    <span class="status-badge online">
+                                    <span class="status-badge active">
                                         <span class="status-dot"></span>
-                                        Online
+                                        Active
                                     </span>
                                 </td>
-                                <td style="color: #86868b;">12s 前</td>
                                 <td>
                                     <div class="actions">
                                         <button class="action-btn" title="编辑">✏️</button>
-                                        <button class="action-btn" title="删除">🗑️</button>
+                                        <button class="action-btn" title="禁用">🚫</button>
                                     </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <div class="agent-name">
-                                        <div class="agent-avatar green">🎯</div>
-                                        <div class="agent-info">
-                                            <div class="agent-title">意图分类 Agent</div>
-                                            <div class="agent-desc">识别用户借贷意图和意向度</div>
+                                    <div class="skill-name">
+                                        <div class="skill-icon green">🎯</div>
+                                        <div class="skill-info">
+                                            <div class="skill-title">意图分类</div>
+                                            <div class="skill-desc">识别用户借贷意图和意向度</div>
                                         </div>
                                     </div>
                                 </td>
-                                <td>A2A</td>
-                                <td>2</td>
+                                <td>获客</td>
+                                <td>2,890</td>
+                                <td>0.8s</td>
                                 <td>
-                                    <span class="status-badge online">
+                                    <span class="status-badge active">
                                         <span class="status-dot"></span>
-                                        Online
+                                        Active
                                     </span>
                                 </td>
-                                <td style="color: #86868b;">8s 前</td>
                                 <td>
                                     <div class="actions">
                                         <button class="action-btn" title="编辑">✏️</button>
-                                        <button class="action-btn" title="删除">🗑️</button>
+                                        <button class="action-btn" title="禁用">🚫</button>
                                     </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <div class="agent-name">
-                                        <div class="agent-avatar orange">📝</div>
-                                        <div class="agent-info">
-                                            <div class="agent-title">申请采集 Agent</div>
-                                            <div class="agent-desc">引导用户填写贷款申请信息</div>
+                                    <div class="skill-name">
+                                        <div class="skill-icon orange">📝</div>
+                                        <div class="skill-info">
+                                            <div class="skill-title">申请采集</div>
+                                            <div class="skill-desc">引导用户填写贷款申请信息</div>
                                         </div>
                                     </div>
                                 </td>
-                                <td>MCP</td>
-                                <td>4</td>
+                                <td>获客</td>
+                                <td>1,567</td>
+                                <td>2.1s</td>
                                 <td>
-                                    <span class="status-badge busy">
+                                    <span class="status-badge active">
                                         <span class="status-dot"></span>
-                                        Busy
+                                        Active
                                     </span>
                                 </td>
-                                <td style="color: #86868b;">5s 前</td>
                                 <td>
                                     <div class="actions">
                                         <button class="action-btn" title="编辑">✏️</button>
-                                        <button class="action-btn" title="删除">🗑️</button>
+                                        <button class="action-btn" title="禁用">🚫</button>
                                     </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <div class="agent-name">
-                                        <div class="agent-avatar purple">🛡️</div>
-                                        <div class="agent-info">
-                                            <div class="agent-title">风控预审 Agent</div>
-                                            <div class="agent-desc">反欺诈检测和信用评分</div>
+                                    <div class="skill-name">
+                                        <div class="skill-icon purple">🛡️</div>
+                                        <div class="skill-info">
+                                            <div class="skill-title">风控预审</div>
+                                            <div class="skill-desc">反欺诈检测和信用评分</div>
                                         </div>
                                     </div>
                                 </td>
-                                <td>A2A</td>
-                                <td>5</td>
+                                <td>风控</td>
+                                <td>1,234</td>
+                                <td>1.5s</td>
                                 <td>
-                                    <span class="status-badge online">
+                                    <span class="status-badge active">
                                         <span class="status-dot"></span>
-                                        Online
+                                        Active
                                     </span>
                                 </td>
-                                <td style="color: #86868b;">15s 前</td>
                                 <td>
                                     <div class="actions">
                                         <button class="action-btn" title="编辑">✏️</button>
-                                        <button class="action-btn" title="删除">🗑️</button>
+                                        <button class="action-btn" title="禁用">🚫</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="skill-name">
+                                        <div class="skill-icon red">💰</div>
+                                        <div class="skill-info">
+                                            <div class="skill-title">贷后管理</div>
+                                            <div class="skill-desc">还款提醒和逾期预警</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>贷后</td>
+                                <td>987</td>
+                                <td>0.9s</td>
+                                <td>
+                                    <span class="status-badge active">
+                                        <span class="status-dot"></span>
+                                        Active
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="actions">
+                                        <button class="action-btn" title="编辑">✏️</button>
+                                        <button class="action-btn" title="禁用">🚫</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="skill-name">
+                                        <div class="skill-icon blue">📊</div>
+                                        <div class="skill-info">
+                                            <div class="skill-title">数据回流</div>
+                                            <div class="skill-desc">数据回流优化风控模型</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>数据</td>
+                                <td>654</td>
+                                <td>1.8s</td>
+                                <td>
+                                    <span class="status-badge inactive">
+                                        <span class="status-dot"></span>
+                                        Inactive
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="actions">
+                                        <button class="action-btn" title="编辑">✏️</button>
+                                        <button class="action-btn" title="启用">✅</button>
                                     </div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                     
+                    <!-- Pagination -->
                     <div class="pagination">
-                        <div class="pagination-info">显示 1-4 共 15 条</div>
+                        <div class="pagination-info">显示 1-6 共 24 条</div>
                         <div class="pagination-controls">
                             <button class="page-btn" disabled>← 上一页</button>
                             <button class="page-btn active">1</button>
                             <button class="page-btn">2</button>
+                            <button class="page-btn">3</button>
+                            <button class="page-btn">4</button>
                             <button class="page-btn">下一页 →</button>
                         </div>
                     </div>
@@ -787,62 +745,10 @@
         </main>
     </div>
 
-    <!-- New Agent Modal -->
-    <div class="modal-overlay" id="newAgentModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h2 class="modal-title">新建 Agent</h2>
-                <button class="modal-close" onclick="closeModal()">×</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label">Agent 名称</label>
-                    <input type="text" class="form-input" placeholder="例如：FB 社群监控 Agent">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Agent 类型</label>
-                    <select class="form-select">
-                        <option>A2A - Agent to Agent</option>
-                        <option>MCP - Model Context Protocol</option>
-                        <option>Local - 本地部署</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">描述</label>
-                    <textarea class="form-input" rows="3" placeholder="描述 Agent 的职责和功能..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Endpoint URL</label>
-                    <input type="url" class="form-input" placeholder="https://api.example.com/agent">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal()">取消</button>
-                <button class="btn btn-primary" onclick="createAgent()">新建 Agent</button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        function showNewAgentModal() {
-            document.getElementById('newAgentModal').classList.add('active');
+        function showNewSkillModal() {
+            alert('✨ 新建 Skill 功能即将上线！\n\n支持：\n- 定义 Skill 输入输出\n- 配置执行逻辑\n- 设置触发条件');
         }
-        
-        function closeModal() {
-            document.getElementById('newAgentModal').classList.remove('active');
-        }
-        
-        function createAgent() {
-            alert('✅ Agent 新建成功！\n\n（演示模式，实际会调用 API 创建）');
-            closeModal();
-        }
-        
-        // 点击遮罩层关闭
-        document.getElementById('newAgentModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
-        });
     </script>
 </body>
 </html>
