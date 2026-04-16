@@ -10,14 +10,21 @@
 ```
 docs/
 ├── index.html                  # 🏠 文档中心首页
+├── README.md                   # 📖 本文档
 ├── strategy/                   # 📊 战略文档
 │   └── hunter-redefined-v2.0.md    # Hunter 重新定义（核心）
 ├── prd/                        # 📝 产品需求文档
 │   └── hunter-agent-management-v1.0.md  # Hunter PRD
 ├── architecture/               # 🏗️ 架构文档
 │   └── hunter-architecture-v1.2.md      # Hunter 架构（已归档）
-└── review/                     # 🔍 评审文档
-    └── hunter-agent-prd-review.md       # PRD 评审意见
+├── review/                     # 🔍 评审文档
+│   └── hunter-agent-prd-review.md       # PRD 评审意见
+└── archive/                    # 📦 归档文档
+    ├── meta_agent_design.md           # 元智能体设计
+    ├── A2A_MVP_SUMMARY.md             # A2A MVP 总结
+    ├── MCP_INTEGRATION_SUMMARY.md     # MCP 集成总结
+    ├── PHASE2_SUMMARY.md              # Phase 2 总结
+    └── HUNTER_AGENT_DEV_START.md      # Hunter 开发启动
 ```
 
 ---
