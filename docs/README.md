@@ -1,138 +1,122 @@
-# 📚 OFW 文档中心访问指南
+# 🎯 Hunter 系统文档中心
 
-## 🌐 访问方式
-
-### 方式 1：本地 HTTP 服务（推荐）
-
-```
-http://localhost:9001/index.html
-```
-
-**说明**：已启动 Python HTTP 服务在 9001 端口，专门服务 docs 目录。
-
-### 方式 2：直接打开本地文件
-
-```bash
-# Linux/Mac
-xdg-open /app/working/workspaces/RAKkDm/docs/index.html
-
-# Windows (需要转换路径)
-start file:///app/working/workspaces/RAKkDm/docs/index.html
-```
-
-### 方式 3：浏览器直接拖入
-
-把 `index.html` 文件直接拖到浏览器窗口即可打开。
+> **Hunter 定位：** 用户注意力的截流与转化引擎  
+> **核心指标：** 触达→申请转化率 >15%
 
 ---
 
-## 目录结构
+## 📂 文档目录
 
 ```
 docs/
-├── index.html              # 🏠 统一预览门户（导航首页）
-├── strategy/               # 📊 战略文档（MRD/BRD/顶层设计）
-├── prd/                    # 📝 产品需求文档
-├── architecture/           # 🏗️ 架构文档
-├── review/                 # 🔍 评审文档
-├── project/                # 📋 项目文档
-└── archive/                # 📦 归档旧版本
+├── index.html                  # 🏠 文档中心首页
+├── strategy/                   # 📊 战略文档
+│   └── hunter-redefined-v2.0.md    # Hunter 重新定义（核心）
+├── prd/                        # 📝 产品需求文档
+│   └── hunter-agent-management-v1.0.md  # Hunter PRD
+├── architecture/               # 🏗️ 架构文档
+│   └── hunter-architecture-v1.2.md      # Hunter 架构（已归档）
+└── review/                     # 🔍 评审文档
+    └── hunter-agent-prd-review.md       # PRD 评审意见
 ```
 
 ---
 
-## 文档分类说明
+## 🌐 访问方式
 
-| 分类 | 存放内容 | 示例 |
-|------|---------|------|
-| strategy | MRD、BRD、顶层设计、战略规划 | ofw_strategy_top_level_design.md |
-| prd | 产品需求文档 | OFW_FB_Traffic_Agent_PRD_v1.md |
-| architecture | 技术架构、系统架构 | - |
-| review | 评审意见、审核报告 | hunter-agent-prd-review.md |
-| project | 项目计划、任务分解、会议纪要 | OFW_FB_Agent_Task_Breakdown.md |
-| archive | 旧版本、备份文件 | OFW_MRD_v1_backup.md |
+### 方式 1：GitHub Pages（推荐）
 
----
+**https://Leojunhan.github.io/ofw-docs/**
 
-## 功能特性
+✅ 永久访问  ✅ 自动同步  ✅ 无需本地环境
 
-- ✅ **统一入口**：一个页面访问所有文档
-- ✅ **分类展示**：按战略/PRD/架构/评审分类
-- ✅ **搜索过滤**：快速找到目标文档
-- ✅ **响应式设计**：手机/电脑都能用
-- ✅ **统计信息**：实时显示文档数量
-
----
-
-## 维护说明
-
-### 添加新文档
-
-1. 将文档放入对应分类目录（如 `docs/strategy/`）
-2. 编辑 `docs/index.html`，在 `documents` 数组中添加新条目：
-
-```javascript
-{
-    title: "文档标题",
-    path: "strategy/你的文档.md",
-    type: "strategy",  // strategy/prd/arch/review/other
-    typeName: "战略",
-    desc: "简短描述",
-    date: "2026-04-16"
-}
-```
-
-### 自动化工具（待开发）
-
-可以写一个脚本自动：
-- 扫描所有 `.md` 和 `.html` 文件
-- 自动分类
-- 自动生成索引
-
----
-
-## 常见问题
-
-**Q: 链接打不开？**  
-A: 确保通过 copaw 环境访问，端口 8088 正在运行。
-
-**Q: 如何外网访问？**  
-A: 需要配置 cloudflared 固定域名隧道（方案 C）。
-
-**Q: 文档太多找不到？**  
-A: 使用页面顶部的搜索框，支持标题/描述/分类搜索。
-
----
-
-## 🔧 服务管理
-
-### 启动服务
+### 方式 2：本地 HTTP 服务
 
 ```bash
-# 方式 1：使用启动脚本
-./start_server.sh
+cd /app/working/workspaces/RAKkDm/docs
+python3 -m http.server 9001
 
-# 方式 2：手动启动
-python3 -m http.server 9001 --directory /app/working/workspaces/RAKkDm/docs
+# 浏览器访问
+http://localhost:9001/
 ```
 
-### 停止服务
+### 方式 3：直接打开文件
 
 ```bash
-# 查找进程
-lsof -i :9001
+# Linux
+xdg-open /app/working/workspaces/RAKkDm/docs/index.html
 
-# 停止服务
-kill <PID>
-```
-
-### 检查服务状态
-
-```bash
-curl -I http://localhost:9001/index.html
+# macOS
+open /app/working/workspaces/RAKkDm/docs/index.html
 ```
 
 ---
 
-**最后更新**: 2026-04-16  
-**维护者**: 小宁 (RAKkDm)
+## 📋 文档说明
+
+| 文档 | 分类 | 说明 |
+|------|------|------|
+| **Hunter 重新定义 v2.0** | 战略 | Hunter 新定位：注意力截流与转化引擎（核心文档） |
+| **Hunter Agent PRD v1.0** | PRD | Hunter Agent 管理系统产品需求 |
+| **Hunter 架构 v1.2** | 架构 | Hunter 系统产品架构（已归档，供参考） |
+| **Hunter Agent PRD 评审** | 评审 | PRD 评审意见 |
+
+---
+
+## 🗑️ 文档维护
+
+### 删除文档
+
+**单个删除：**
+```bash
+cd /app/working/workspaces/RAKkDm
+./docs/delete_doc.sh docs/path/to/file.md
+```
+
+**批量删除：**
+1. 编辑 `.github/workflows/delete-doc.yml`（如需要）
+2. 手动删除文件并更新 `index.html`
+3. 提交推送：`git add . && git commit -m "docs: 删除 xxx" && git push`
+
+### 添加文档
+
+1. 在对应目录创建 `.md` 文件
+2. 更新 `index.html` 中的 `documents` 数组
+3. 提交推送：`git add . && git commit -m "docs: 新增 xxx" && git push`
+
+---
+
+## 🎯 Hunter 核心概念
+
+### 定位
+**用户注意力的截流与转化引擎**
+
+### 核心指标
+- 触达→申请转化率 >15%
+- 获客成本 <$1/人
+- 日均获客 2000-5000 人
+
+### 聚焦 Agent（5 个）
+1. **FB 社群 Agent** - 注意力捕捉
+2. **意图分类 Agent** - 需求理解
+3. **知识库 Agent** - 信任建立
+4. **申请引导 Agent** - 转化引导
+5. **数据回流 Agent** - 优化闭环
+
+### 与 Agent Manager 关系
+- **Hunter** = 业务引擎（负责获客转化）
+- **Agent Manager** = 技术调度（负责任务执行）
+
+---
+
+## 📞 需要帮助？
+
+查看核心文档：
+- **Hunter 重新定义** - 理解 Hunter 定位和战略
+- **Hunter PRD** - 了解产品功能设计
+- **Hunter 架构** - 了解系统架构设计
+
+---
+
+**最后更新：** 2026-04-16  
+**文档版本：** v1.0
