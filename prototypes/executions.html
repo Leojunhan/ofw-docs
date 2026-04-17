@@ -1104,13 +1104,87 @@
             color: #89D185;
         }
         
+        /* ========== Drawer Footer（按钮简化） ========== */
         .drawer-footer {
             padding: 16px 24px;
             border-top: 1px solid var(--border);
             display: flex;
             gap: 12px;
-            justify-content: flex-end;
+            justify-content: space-between;
+            align-items: center;
             background: var(--bg-page);
+        }
+        
+        .drawer-footer-primary {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .drawer-footer-secondary {
+            position: relative;
+        }
+        
+        .more-actions-btn {
+            padding: 8px 12px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+        
+        .more-actions-btn:hover {
+            background: var(--bg-page);
+            border-color: var(--text-secondary);
+        }
+        
+        .more-actions-menu {
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            margin-bottom: 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 0;
+            min-width: 160px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(8px);
+            transition: all 0.2s;
+            z-index: 10;
+        }
+        
+        .more-actions-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .more-actions-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 13px;
+        }
+        
+        .more-actions-item:hover {
+            background: var(--bg-page);
+        }
+        
+        .more-actions-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 8px 0;
         }
         
         /* ========== Toast 通知 ========== */
@@ -2614,12 +2688,30 @@
             </div>
         </div>
         <div class="drawer-footer" id="drawerFooter">
-            <button class="btn btn-secondary" onclick="closeDrawer()">关闭</button>
-            <button class="btn btn-secondary" onclick="viewRelatedAgent(currentExecId)">🤖 查看关联 Agent</button>
-            <button class="btn btn-secondary" onclick="openFullLog(currentExecId)">📝 完整日志</button>
-            <button class="btn btn-secondary" onclick="copyExecId(currentExecId)">📋 复制 ID</button>
-            <button class="btn btn-success btn-sm" id="retryBtnDrawer" onclick="retryTask(currentExecId)">🔄 重试</button>
-            <button class="btn btn-danger btn-sm" id="cancelBtnDrawer" onclick="cancelTask(currentExecId)">⏹ 取消</button>
+            <!-- 主操作按钮 -->
+            <div class="drawer-footer-primary">
+                <button class="btn btn-secondary" onclick="closeDrawer()">关闭</button>
+                <button class="btn btn-success" id="retryBtnDrawer" onclick="retryTask(currentExecId)">🔄 重试</button>
+                <button class="btn btn-danger" id="cancelBtnDrawer" onclick="cancelTask(currentExecId)">⏹ 取消</button>
+            </div>
+            <!-- 更多操作下拉 -->
+            <div class="drawer-footer-secondary">
+                <button class="more-actions-btn" onclick="toggleMoreActions()">
+                    <span>更多</span>
+                    <span>⋮</span>
+                </button>
+                <div class="more-actions-menu" id="moreActionsMenu">
+                    <div class="more-actions-item" onclick="viewRelatedAgent(currentExecId)">
+                        <span>🤖</span> 查看关联 Agent
+                    </div>
+                    <div class="more-actions-item" onclick="openFullLog(currentExecId)">
+                        <span>📝</span> 完整日志
+                    </div>
+                    <div class="more-actions-item" onclick="copyExecId(currentExecId)">
+                        <span>📋</span> 复制 ID
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -2690,9 +2782,24 @@
             </div>
         </div>
         <div class="drawer-footer">
-            <button class="btn btn-secondary" onclick="closeSkillExecDrawer()">关闭</button>
-            <button class="btn btn-secondary" onclick="openSkillDetail(currentSkillId)">⚡ 查看 Skill 详情</button>
-            <button class="btn btn-secondary" onclick="copySkillId(currentSkillId)">📋 复制 ID</button>
+            <div class="drawer-footer-primary">
+                <button class="btn btn-secondary" onclick="closeSkillExecDrawer()">关闭</button>
+                <button class="btn btn-success" onclick="retrySkillExec(currentSkillId)">🔄 重试</button>
+            </div>
+            <div class="drawer-footer-secondary">
+                <button class="more-actions-btn" onclick="toggleSkillMoreActions()">
+                    <span>更多</span>
+                    <span>⋮</span>
+                </button>
+                <div class="more-actions-menu" id="skillMoreActionsMenu">
+                    <div class="more-actions-item" onclick="openSkillDetail(currentSkillId)">
+                        <span>⚡</span> 查看 Skill 详情
+                    </div>
+                    <div class="more-actions-item" onclick="copySkillId(currentSkillId)">
+                        <span>📋</span> 复制 ID
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -2743,9 +2850,23 @@
             </div>
         </div>
         <div class="drawer-footer">
-            <button class="btn btn-secondary" onclick="closeAgentDrawer()">关闭</button>
-            <button class="btn btn-secondary" onclick="goToAgentPage(currentAgentId)">📋 完整详情</button>
-            <button class="btn btn-secondary" onclick="openAgentConfig(currentAgentId)">⚙️ 配置</button>
+            <div class="drawer-footer-primary">
+                <button class="btn btn-secondary" onclick="closeAgentDrawer()">关闭</button>
+            </div>
+            <div class="drawer-footer-secondary">
+                <button class="more-actions-btn" onclick="toggleAgentMoreActions()">
+                    <span>更多</span>
+                    <span>⋮</span>
+                </button>
+                <div class="more-actions-menu" id="agentMoreActionsMenu">
+                    <div class="more-actions-item" onclick="goToAgentPage(currentAgentId)">
+                        <span>📋</span> 完整详情
+                    </div>
+                    <div class="more-actions-item" onclick="openAgentConfig(currentAgentId)">
+                        <span>⚙️</span> 配置
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -2902,12 +3023,34 @@
             // 打开 drawer
             overlay.classList.add('active');
             drawer.classList.add('active');
+            // 重置更多操作菜单状态
+            closeMoreActions();
         }
         
         function closeDrawer() {
             document.getElementById('drawerOverlay').classList.remove('active');
             document.getElementById('drawer').classList.remove('active');
+            closeMoreActions();
         }
+        
+        function toggleMoreActions() {
+            const menu = document.getElementById('moreActionsMenu');
+            menu.classList.toggle('show');
+        }
+        
+        function closeMoreActions() {
+            const menu = document.getElementById('moreActionsMenu');
+            if (menu) menu.classList.remove('show');
+        }
+        
+        // 点击其他区域关闭下拉菜单
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('moreActionsMenu');
+            const btn = e.target.closest('.more-actions-btn');
+            if (!btn && menu && menu.classList.contains('show')) {
+                menu.classList.remove('show');
+            }
+        });
         
         function updateFailedLogs() {
             const logContent = document.getElementById('logContent');
@@ -3299,6 +3442,17 @@
         function closeAgentDrawer() {
             document.getElementById('agentDrawerOverlay').classList.remove('active');
             document.getElementById('agentDrawer').classList.remove('active');
+            closeAgentMoreActions();
+        }
+        
+        function toggleAgentMoreActions() {
+            const menu = document.getElementById('agentMoreActionsMenu');
+            menu.classList.toggle('show');
+        }
+        
+        function closeAgentMoreActions() {
+            const menu = document.getElementById('agentMoreActionsMenu');
+            if (menu) menu.classList.remove('show');
         }
         
         // ========== Skill Execution Drawer ========== 
@@ -3323,6 +3477,17 @@
         function closeSkillExecDrawer() {
             document.getElementById('skillExecDrawerOverlay').classList.remove('active');
             document.getElementById('skillExecDrawer').classList.remove('active');
+            closeSkillMoreActions();
+        }
+        
+        function toggleSkillMoreActions() {
+            const menu = document.getElementById('skillMoreActionsMenu');
+            menu.classList.toggle('show');
+        }
+        
+        function closeSkillMoreActions() {
+            const menu = document.getElementById('skillMoreActionsMenu');
+            if (menu) menu.classList.remove('show');
         }
         
         // ========== 失败任务的 Skill 调用明细 ========== 
