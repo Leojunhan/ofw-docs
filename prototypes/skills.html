@@ -26,6 +26,24 @@
             --border: #E2E8F0;
             --bg-card: #FFFFFF;
             --bg-page: #F7FAFC;
+            
+            /* ========== 字体层级规范 ========== */
+            --font-h1: 24px;      /* 一级标题 - 页面主标题 */
+            --font-h2: 18px;      /* 二级标题 - 卡片标题、区块标题 */
+            --font-h3: 16px;      /* 三级标题 - 子标题、Drawer标题 */
+            --font-h4: 14px;      /* 四级标题 - 小标题、标签 */
+            --font-body: 14px;    /* 正文 */
+            --font-sm: 13px;      /* 辅助文字 */
+            --font-xs: 12px;      /* 小字 */
+            --font-micro: 11px;   /* 微字 */
+            
+            /* 字重规范 */
+            --weight-bold: 700;
+            --weight-semibold: 600;
+            --weight-medium: 500;
+            --weight-normal: 400;
+            
+            /* 尺寸 */
             --stat-number-size: 48px;
             --card-gap: 24px;
             --card-radius: 8px;
@@ -186,8 +204,8 @@
         }
         
         .page-title {
-            font-size: 18px;
-            font-weight: 600;
+            font-size: var(--font-h2);      /* 二级标题 18px */
+            font-weight: var(--weight-semibold);
             color: var(--text-primary);
         }
         
@@ -347,15 +365,15 @@
         }
         
         .stat-label {
-            font-size: 13px;
-            font-weight: 500;
+            font-size: var(--font-sm);      /* 辅助文字 13px */
+            font-weight: var(--weight-medium);
             color: var(--text-secondary);
             margin-bottom: 4px;
         }
         
         .stat-value {
-            font-size: 24px;
-            font-weight: 700;
+            font-size: var(--font-h1);      /* 一级标题 24px */
+            font-weight: var(--weight-bold);
             line-height: 1.2;
             color: var(--text-primary);
         }
