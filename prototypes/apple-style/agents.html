@@ -379,6 +379,41 @@
             color: white;
         }
         
+        /* Form Inputs */
+        .settings-input {
+            padding: 10px 14px;
+            border: 1px solid var(--separator);
+            border-radius: var(--radius-sm);
+            background: var(--system-background);
+            font-size: var(--font-subhead);
+            color: var(--label-color);
+            transition: all 0.2s ease;
+            width: 100px;
+        }
+        
+        .settings-input:focus {
+            outline: none;
+            border-color: var(--system-blue);
+            box-shadow: 0 0 0 3px var(--system-blue-light);
+        }
+        
+        .settings-select {
+            padding: 10px 14px;
+            border: 1px solid var(--separator);
+            border-radius: var(--radius-sm);
+            background: var(--system-background);
+            font-size: var(--font-subhead);
+            color: var(--label-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .settings-select:focus {
+            outline: none;
+            border-color: var(--system-blue);
+            box-shadow: 0 0 0 3px var(--system-blue-light);
+        }
+        
         .detail-section {
             margin-bottom: var(--spacing-lg);
         }
@@ -1042,7 +1077,114 @@
 
         // Show Create Drawer
         function showCreateDrawer() {
-            showToast('创建 Agent 功能开发中...');
+            document.getElementById('drawerTitle').textContent = '创建新 Agent';
+            
+            document.getElementById('drawerBody').innerHTML = `
+                <div class="detail-section">
+                    <div class="detail-section-title">基本信息</div>
+                    <div class="detail-row" style="flex-direction: column; gap: 8px;">
+                        <span class="detail-label">名称</span>
+                        <input type="text" class="settings-input" style="width: 100%; text-align: left;" placeholder="例如：SEO内容Agent" id="createName">
+                    </div>
+                    <div class="detail-row" style="flex-direction: column; gap: 8px;">
+                        <span class="detail-label">描述</span>
+                        <textarea class="settings-input" style="width: 100%; text-align: left; height: 60px; resize: none;" placeholder="描述 Agent 的主要功能..." id="createDesc"></textarea>
+                    </div>
+                    <div class="detail-row" style="flex-direction: column; gap: 8px;">
+                        <span class="detail-label">图标</span>
+                        <select class="settings-select" style="width: 100%;" id="createIcon">
+                            <option value="🤖">🤖 机器人</option>
+                            <option value="📝">📝 文档</option>
+                            <option value="💬">💬 消息</option>
+                            <option value="🛡️">🛡️ 防护</option>
+                            <option value="🎬">🎬 视频</option>
+                            <option value="🌟">🌟 推荐</option>
+                            <option value="💰">💰 金融</option>
+                            <option value="🎯">🎯 目标</option>
+                            <option value="📚">📚 知识</option>
+                            <option value="🔄">🔄 数据</option>
+                            <option value="🎛️">🎛️ 管理</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="detail-section-title">绑定 Skills</div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;">
+                            <input type="checkbox" value="xlsx"> <span style="font-size: 14px;">xlsx</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;">
+                            <input type="checkbox" value="docx"> <span style="font-size: 14px;">docx</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;">
+                            <input type="checkbox" value="pdf"> <span style="font-size: 14px;">pdf</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;">
+                            <input type="checkbox" value="browser_visible"> <span style="font-size: 14px;">browser_visible</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;">
+                            <input type="checkbox" value="file_reader"> <span style="font-size: 14px;">file_reader</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;">
+                            <input type="checkbox" value="cron"> <span style="font-size: 14px;">cron</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;">
+                            <input type="checkbox" value="himalaya"> <span style="font-size: 14px;">himalaya</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;">
+                            <input type="checkbox" value="pptx"> <span style="font-size: 14px;">pptx</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;">
+                            <input type="checkbox" value="trend-tracking"> <span style="font-size: 14px;">trend-tracking</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;">
+                            <input type="checkbox" value="guidance"> <span style="font-size: 14px;">guidance</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="detail-section-title">运行配置</div>
+                    <div class="detail-row">
+                        <span class="detail-label">Heartbeat (秒)</span>
+                        <input type="number" class="settings-input" value="30" id="createHeartbeat">
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Timeout (秒)</span>
+                        <input type="number" class="settings-input" value="90" id="createTimeout">
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Max Retries</span>
+                        <input type="number" class="settings-input" value="3" id="createRetries">
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('drawerActions').innerHTML = `
+                <div class="action-row">
+                    <button class="action-btn action-btn-primary" onclick="createAgent()">✓ 创建 Agent</button>
+                    <button class="action-btn action-btn-secondary" onclick="closeDrawer()">取消</button>
+                </div>
+            `;
+            
+            document.getElementById('drawerOverlay').classList.add('active');
+            document.getElementById('detailDrawer').classList.add('active');
+        }
+        
+        // Create Agent
+        function createAgent() {
+            const name = document.getElementById('createName').value;
+            const desc = document.getElementById('createDesc').value;
+            const icon = document.getElementById('createIcon').value;
+            
+            if (!name) {
+                showToast('请输入 Agent 名称', 'error');
+                return;
+            }
+            
+            showToast(`${name} 创建成功！`);
+            closeDrawer();
         }
 
         // Filter Agents
