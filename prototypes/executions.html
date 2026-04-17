@@ -1451,6 +1451,11 @@
         </div>
         <div class="drawer-footer" id="drawerFooter">
             <button class="btn btn-secondary" onclick="closeDrawer()">关闭</button>
+            <button class="btn btn-secondary" onclick="viewRelatedAgent(currentExecId)">🤖 查看关联 Agent</button>
+            <button class="btn btn-secondary" onclick="openFullLog(currentExecId)">📝 完整日志</button>
+            <button class="btn btn-secondary" onclick="copyExecId(currentExecId)">📋 复制 ID</button>
+            <button class="btn btn-success btn-sm" id="retryBtnDrawer" onclick="retryTask(currentExecId)">🔄 重试</button>
+            <button class="btn btn-danger btn-sm" id="cancelBtnDrawer" onclick="cancelTask(currentExecId)">⏹ 取消</button>
         </div>
     </div>
 
@@ -1477,11 +1482,14 @@
                 statusBadge.innerHTML = '<span class="status-badge failed"><span class="status-dot"></span>✕ 失败</span>';
             }
             
-            // 更新 footer 按钮
+            // 更新 footer 按钮 - 根据状态显示不同操作
             const footer = document.getElementById('drawerFooter');
             if (status === 'failed') {
                 footer.innerHTML = `
                     <button class="btn btn-secondary" onclick="closeDrawer()">关闭</button>
+                    <button class="btn btn-secondary" onclick="viewRelatedAgent('${execId}')">🤖 查看 Agent</button>
+                    <button class="btn btn-secondary" onclick="openFullLog('${execId}')">📝 完整日志</button>
+                    <button class="btn btn-secondary" onclick="copyExecId('${execId}')">📋 复制 ID</button>
                     <button class="btn btn-success" onclick="retryTask('${execId}')">🔄 重试</button>
                     <button class="btn btn-danger" onclick="deleteTask('${execId}')">🗑️ 删除</button>
                 `;
@@ -1490,11 +1498,17 @@
             } else if (status === 'running') {
                 footer.innerHTML = `
                     <button class="btn btn-secondary" onclick="closeDrawer()">关闭</button>
-                    <button class="btn btn-danger" onclick="cancelTask('${execId}')">✕ 取消任务</button>
+                    <button class="btn btn-secondary" onclick="viewRelatedAgent('${execId}')">🤖 查看 Agent</button>
+                    <button class="btn btn-secondary" onclick="openFullLog('${execId}')">📝 完整日志</button>
+                    <button class="btn btn-secondary" onclick="copyExecId('${execId}')">📋 复制 ID</button>
+                    <button class="btn btn-danger" onclick="cancelTask('${execId}')">⏹ 取消</button>
                 `;
             } else {
                 footer.innerHTML = `
                     <button class="btn btn-secondary" onclick="closeDrawer()">关闭</button>
+                    <button class="btn btn-secondary" onclick="viewRelatedAgent('${execId}')">🤖 查看 Agent</button>
+                    <button class="btn btn-secondary" onclick="openFullLog('${execId}')">📝 完整日志</button>
+                    <button class="btn btn-secondary" onclick="copyExecId('${execId}')">📋 复制 ID</button>
                 `;
             }
             
@@ -1616,6 +1630,36 @@
         
         function downloadLog() {
             showToast('日志文件已开始下载', 'success');
+        }
+        
+        // ========== 新增操作函数 ========== 
+        function viewRelatedAgent(execId) {
+            showToast(`正在跳转到关联 Agent...`, 'success');
+            // 模拟跳转：实际应跳转到 agents.html 并打开对应 Agent 详情
+            setTimeout(() => {
+                showToast(`提示：实际会跳转到 Agent 详情页`, 'success');
+            }, 500);
+        }
+        
+        function openFullLog(execId) {
+            showToast(`正在打开 ${execId} 的完整日志...`, 'success');
+            // 模态打开完整日志页面或 Drawer
+        }
+        
+        function copyExecId(execId) {
+            // 模拟复制到剪贴板
+            navigator.clipboard.writeText(execId).then(() => {
+                showToast(`${execId} 已复制到剪贴板`, 'success');
+            }).catch(() => {
+                showToast(`${execId} 已复制`, 'success');
+            });
+        }
+        
+        function deleteTask(execId) {
+            if (confirm(`确认删除执行记录 ${execId}？此操作不可恢复。`)) {
+                showToast(`执行记录 ${execId} 已删除`, 'success');
+                closeDrawer();
+            }
         }
         
         // ========== 筛选功能 ==========
