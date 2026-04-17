@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent 管理 - Hunter Agent 管理系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-dark: #5b21b6;
+            --primary-light: #8b5cf6;
+            --accent-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            
+            --bg-primary: #fafbfc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f6f8fa;
+            --text-primary: #1a1a2e;
+            --text-secondary: #6b7280;
+            --text-tertiary: #9ca3af;
+            --border-light: rgba(0, 0, 0, 0.06);
+            --border-medium: rgba(0, 0, 0, 0.12);
+            
+            --success: #10b981;
+            --success-bg: rgba(16, 185, 129, 0.1);
+            --warning: #f59e0b;
+            --warning-bg: rgba(245, 158, 11, 0.1);
+            --danger: #ef4444;
+            --danger-bg: rgba(239, 68, 68, 0.1);
+            --info: #3b82f6;
+            --info-bg: rgba(59, 130, 246, 0.1);
+            
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+            --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.15);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+        
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 260px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-light);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo {
+            width: 36px;
+            height: 36px;
+            background: var(--primary-gradient);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .brand-name {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .nav-section {
+            padding: 16px 12px;
+            flex: 1;
+        }
+        
+        .nav-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 0 12px;
+            margin-bottom: 8px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 11px 12px;
+            margin: 2px 0;
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .nav-item:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            transform: translateX(2px);
+        }
+        
+        .nav-item.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
+        }
+        
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .nav-badge {
+            margin-left: auto;
+            padding: 2px 8px;
+            background: var(--danger-bg);
+            color: var(--danger);
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .sidebar-footer {
+            padding: 16px 12px;
+            border-top: 1px solid var(--border-light);
+        }
+        
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            min-height: 100vh;
+        }
+        
+        .top-bar {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid var(--border-light);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.2s;
+        }
+        
+        .icon-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .content-area {
+            padding: 32px;
+        }
+        
+        /* Action Bar */
+        .action-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            gap: 16px;
+        }
+        
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            border: 1.5px solid var(--border-light);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            background: var(--bg-secondary);
+            transition: all 0.2s;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-tertiary);
+            font-size: 16px;
+        }
+        
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.35);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-light);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+            border-color: var(--border-medium);
+        }
+        
+        /* Agent Grid */
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+        
+        .agent-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-light);
+            padding: 24px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .agent-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--primary-gradient);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .agent-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: transparent;
+        }
+        
+        .agent-card:hover::before {
+            opacity: 1;
+        }
+        
+        .agent-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .agent-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        
+        .agent-icon.a2a { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .agent-icon.mcp { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .agent-icon.local { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        
+        .agent-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .agent-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .agent-type {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        
+        .agent-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        
+        .agent-status.online {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+        
+        .agent-status.offline {
+            background: var(--text-tertiary);
+            color: white;
+        }
+        
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .agent-description {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 16px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .agent-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-light);
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+        
+        .agent-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .agent-actions {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .agent-card:hover .agent-actions {
+            opacity: 1;
+        }
+        
+        .agent-action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .agent-action-btn:hover {
+            background: var(--primary-gradient);
+            color: white;
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: var(--radius-xl);
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .modal-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .modal-close:hover {
+            background: var(--danger-bg);
+            color: var(--danger);
+        }
+        
+        .modal-body {
+            padding: 32px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 8px;
+        }
+        
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid var(--border-light);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            color: var(--text-primary);
+            transition: all 0.2s;
+            background: var(--bg-secondary);
+        }
+        
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+        }
+        
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-hint {
+            margin-top: 6px;
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+        
+        .form-checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        
+        .form-checkbox input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .modal-footer {
+            padding: 20px 32px;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            background: var(--bg-tertiary);
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 16px 20px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-light);
+            display: none;
+            align-items: center;
+            gap: 12px;
+            z-index: 2000;
+        }
+        
+        .toast.show {
+            display: flex;
+            animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .toast-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        .toast-icon.success {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+        
+        .toast-message {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        /* MetaAgent Loading Animation */
+        .metaagent-loading {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .metaagent-loading.active {
+            display: block;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--border-light);
+            border-top-color: var(--primary-light);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .loading-subtext {
+            font-size: 13px;
+            color: var(--text-tertiary);
+        }
+        
+        .metaagent-result {
+            display: none;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .metaagent-result.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .result-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .result-icon.skills { background: var(--info-bg); }
+        .result-icon.memory { background: var(--warning-bg); }
+        .result-icon.schedule { background: var(--success-bg); }
+        
+        .result-content {
+            flex: 1;
+        }
+        
+        .result-label {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+        }
+        
+        .result-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">H</div>
+                <span class="brand-name">Hunter</span>
+            </div>
+            
+            <nav class="nav-section">
+                <div class="nav-label">主菜单</div>
+                <a href="dashboard-v2.html" class="nav-item" onclick="setActive(this)">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="agents.html" class="nav-item active" onclick="setActive(this)">
+                    <span class="nav-icon">🤖</span>
+                    <span>Agent 管理</span>
+                </a>
+                <a href="skills.html" class="nav-item" onclick="setActive(this)">
+                    <span class="nav-icon">⚡</span>
+                    <span>Skill 管理</span>
+                </a>
+                <a href="executions.html" class="nav-item" onclick="setActive(this)">
+                    <span class="nav-icon">📝</span>
+                    <span>执行记录</span>
+                </a>
+                <a href="memory.html" class="nav-item" onclick="setActive(this)">
+                    <span class="nav-icon">🧠</span>
+                    <span>记忆中心</span>
+                    <span class="nav-badge">新</span>
+                </a>
+                
+                <div class="nav-label" style="margin-top: 24px;">系统</div>
+                <a href="settings.html" class="nav-item" onclick="setActive(this)">
+                    <span class="nav-icon">⚙️</span>
+                    <span>系统设置</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="dashboard-v2.html" class="nav-item" onclick="showToast('👋 已退出登录')">
+                    <span class="nav-icon">🚪</span>
+                    <span>退出登录</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="page-header">
+                    <h1 class="page-title">🤖 Agent 管理</h1>
+                    <span class="page-subtitle">管理你的智能体团队</span>
+                </div>
+                <div class="user-menu">
+                    <button class="icon-btn" onclick="showToast('🔔 暂无新通知')" title="通知">🔔</button>
+                    <button class="icon-btn" onclick="showToast('❓ 帮助中心即将上线')" title="帮助">❓</button>
+                    <div class="avatar" onclick="showToast('👤 个人中心即将上线')" title="个人中心">D</div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Action Bar -->
+                <div class="action-bar">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" class="search-input" placeholder="搜索 Agent..." id="searchInput" onkeyup="filterAgents()">
+                    </div>
+                    <button class="btn btn-primary" onclick="showNewAgentModal()">
+                        <span>✨</span> 新建 Agent
+                    </button>
+                </div>
+
+                <!-- Agent Grid -->
+                <div class="agent-grid" id="agentGrid">
+                    <!-- Agent Cards will be rendered by JS -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- New Agent Modal (MetaAgent) -->
+    <div class="modal-overlay" id="newAgentModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">🤖 用自然语言创建 Agent</h2>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">描述你的 Agent</label>
+                    <textarea class="form-input form-textarea" id="agentDescription" placeholder="例如：帮我创建一个 FB 社群监控 Agent，自动发现借贷需求用户，每天 9 点工作，记住已联系的用户..."></textarea>
+                    <div class="form-hint">💡 MetaAgent 会自动解析你的需求，配置 Skills 和记忆</div>
+                </div>
+                
+                <!-- MetaAgent Loading -->
+                <div class="metaagent-loading" id="metaagentLoading">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">🤖 MetaAgent 正在思考...</div>
+                    <div class="loading-subtext">正在解析需求、匹配 Skills、配置记忆模块</div>
+                </div>
+                
+                <!-- MetaAgent Result -->
+                <div class="metaagent-result" id="metaagentResult">
+                    <div class="result-item">
+                        <div class="result-icon skills">⚡</div>
+                        <div class="result-content">
+                            <div class="result-label">推荐 Skills</div>
+                            <div class="result-value" id="resultSkills">FB 社群监控、意图分类、自动触达</div>
+                        </div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-icon memory">🧠</div>
+                        <div class="result-content">
+                            <div class="result-label">记忆模块</div>
+                            <div class="result-value" id="resultMemory">用户联系记录、对话历史</div>
+                        </div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-icon schedule">⏰</div>
+                        <div class="result-content">
+                            <div class="result-label">调度配置</div>
+                            <div class="result-value" id="resultSchedule">每天 9:00-18:00，心跳 30s</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+                <button class="btn btn-primary" id="createAgentBtn" onclick="createAgentWithMetaAgent()">
+                    <span>✨</span> 让 MetaAgent 创建
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Agent Modal -->
+    <div class="modal-overlay" id="editAgentModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">✏️ 编辑 Agent</h2>
+                <button class="modal-close" onclick="closeEditModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Agent 名称</label>
+                    <input type="text" class="form-input" id="editAgentName">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">描述</label>
+                    <textarea class="form-input form-textarea" id="editAgentDescription"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Agent 类型</label>
+                    <select class="form-select" id="editAgentType">
+                        <option value="a2a">A2A</option>
+                        <option value="mcp">MCP</option>
+                        <option value="local">Local</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">心跳间隔 (秒)</label>
+                    <input type="number" class="form-input" id="editHeartbeat" value="30">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">配置 Skills</label>
+                    <div class="form-checkbox-group" id="editAgentSkills">
+                        <label class="form-checkbox">
+                            <input type="checkbox" value="fb_monitor"> FB 社群监控
+                        </label>
+                        <label class="form-checkbox">
+                            <input type="checkbox" value="intent_classify"> 意图分类
+                        </label>
+                        <label class="form-checkbox">
+                            <input type="checkbox" value="auto_reach"> 自动触达
+                        </label>
+                        <label class="form-checkbox">
+                            <input type="checkbox" value="risk_assess"> 风控评估
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeEditModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveAgentEdit()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div class="toast-icon success" id="toastIcon">✅</div>
+        <div class="toast-message" id="toastMessage">操作成功</div>
+    </div>
+
+    <script>
+        // Agent Data
+        const agents = [
+            {
+                id: 1,
+                name: 'FB 社群监控 Agent',
+                type: 'a2a',
+                typeLabel: 'A2A',
+                status: 'online',
+                description: '自动监控 Facebook 社群，发现借贷需求用户，进行初步触达和意图分类',
+                skills: ['FB 社群监控', '意图分类', '自动触达'],
+                heartbeat: 30,
+                lastSeen: '刚刚'
+            },
+            {
+                id: 2,
+                name: '风控预审 Agent',
+                type: 'mcp',
+                typeLabel: 'MCP',
+                status: 'online',
+                description: '对贷款申请进行自动预审，反欺诈检测，信用评分，秒级决策',
+                skills: ['反欺诈检测', '信用评分', '风险评估'],
+                heartbeat: 30,
+                lastSeen: '刚刚'
+            },
+            {
+                id: 3,
+                name: '贷后管理 Agent',
+                type: 'a2a',
+                typeLabel: 'A2A',
+                status: 'online',
+                description: '自动发送还款提醒，逾期预警，复借引导，提升还款率',
+                skills: ['还款提醒', '逾期预警', '复借引导'],
+                heartbeat: 60,
+                lastSeen: '2 分钟前'
+            },
+            {
+                id: 4,
+                name: 'KOL 协作 Agent',
+                type: 'a2a',
+                typeLabel: 'A2A',
+                status: 'offline',
+                description: '发现合适的 KOL，自动洽谈合作，追踪推广效果',
+                skills: ['网红发现', '合作洽谈', '效果追踪'],
+                heartbeat: 300,
+                lastSeen: '2 小时前'
+            },
+            {
+                id: 5,
+                name: 'SEO 内容 Agent',
+                type: 'local',
+                typeLabel: 'Local',
+                status: 'online',
+                description: '生成 SEO 优化的借贷攻略内容，提升自然搜索流量',
+                skills: ['内容生成', '关键词优化', 'SEO 分析'],
+                heartbeat: 300,
+                lastSeen: '5 分钟前'
+            },
+            {
+                id: 6,
+                name: '被拒留存 Agent',
+                type: 'a2a',
+                typeLabel: 'A2A',
+                status: 'busy',
+                description: '温暖告知被拒用户，提供改善建议，90 天后再次触达',
+                skills: ['温暖告知', '改善建议', '定期触达'],
+                heartbeat: 60,
+                lastSeen: '运行中'
+            }
+        ];
+
+        // Render Agent Grid
+        function renderAgents(filterText = '') {
+            const grid = document.getElementById('agentGrid');
+            const filtered = agents.filter(agent => 
+                agent.name.toLowerCase().includes(filterText.toLowerCase()) ||
+                agent.description.toLowerCase().includes(filterText.toLowerCase())
+            );
+            
+            grid.innerHTML = filtered.map(agent => `
+                <div class="agent-card" onclick="showAgentDetail(${agent.id})">
+                    <div class="agent-actions">
+                        <button class="agent-action-btn" onclick="event.stopPropagation(); showEditModal(${agent.id})" title="编辑">✏️</button>
+                        <button class="agent-action-btn" onclick="event.stopPropagation(); toggleAgent(${agent.id})" title="${agent.status === 'online' ? '停止' : '启动'}">${agent.status === 'online' ? '⏸️' : '▶️'}</button>
+                        <button class="agent-action-btn" onclick="event.stopPropagation(); deleteAgent(${agent.id})" title="删除" style="color: var(--danger);">🗑️</button>
+                    </div>
+                    <div class="agent-header">
+                        <div class="agent-icon ${agent.type}">🤖</div>
+                        <div class="agent-info">
+                            <div class="agent-name">${agent.name}</div>
+                            <div class="agent-type">${agent.typeLabel}</div>
+                        </div>
+                    </div>
+                    <div class="agent-status ${agent.status}">
+                        <span class="status-dot"></span>
+                        ${agent.status === 'online' ? '在线' : agent.status === 'offline' ? '离线' : '忙碌'}
+                    </div>
+                    <div class="agent-description">${agent.description}</div>
+                    <div class="agent-meta">
+                        <div class="agent-meta-item">
+                            <span>⚡</span>
+                            <span>心跳：${agent.heartbeat}s</span>
+                        </div>
+                        <div class="agent-meta-item">
+                            <span>🕐</span>
+                            <span>${agent.lastSeen}</span>
+                        </div>
+                        <div class="agent-meta-item">
+                            <span>⚡</span>
+                            <span>${agent.skills.length} Skills</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter Agents
+        function filterAgents() {
+            const text = document.getElementById('searchInput').value;
+            renderAgents(text);
+        }
+
+        // Set Active Navigation
+        function setActive(element) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            element.classList.add('active');
+        }
+
+        // Show Toast
+        function showToast(message, icon = '✅') {
+            const toast = document.getElementById('toast');
+            const toastIcon = document.getElementById('toastIcon');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastIcon.textContent = icon;
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Show New Agent Modal
+        function showNewAgentModal() {
+            document.getElementById('newAgentModal').classList.add('active');
+            document.getElementById('agentDescription').value = '';
+            document.getElementById('metaagentLoading').classList.remove('active');
+            document.getElementById('metaagentResult').classList.remove('active');
+            document.getElementById('createAgentBtn').style.display = 'inline-flex';
+        }
+
+        // Close Modal
+        function closeModal() {
+            document.getElementById('newAgentModal').classList.remove('active');
+        }
+
+        // Create Agent with MetaAgent
+        function createAgentWithMetaAgent() {
+            const description = document.getElementById('agentDescription').value;
+            
+            if (!description) {
+                showToast('❌ 请填写 Agent 描述', '❌');
+                return;
+            }
+            
+            // Hide create button, show loading
+            document.getElementById('createAgentBtn').style.display = 'none';
+            document.getElementById('metaagentLoading').classList.add('active');
+            
+            // Simulate MetaAgent processing
+            setTimeout(() => {
+                document.getElementById('metaagentLoading').classList.remove('active');
+                document.getElementById('metaagentResult').classList.add('active');
+                document.getElementById('createAgentBtn').style.display = 'inline-flex';
+                document.getElementById('createAgentBtn').innerHTML = '<span>✅</span> 确认创建';
+                
+                showToast('🤖 MetaAgent 解析完成', '🤖');
+            }, 2000);
+        }
+
+        // Show Edit Modal
+        function showEditModal(agentId) {
+            const agent = agents.find(a => a.id === agentId);
+            if (!agent) return;
+            
+            document.getElementById('editAgentName').value = agent.name;
+            document.getElementById('editAgentDescription').value = agent.description;
+            document.getElementById('editAgentType').value = agent.type;
+            document.getElementById('editHeartbeat').value = agent.heartbeat;
+            
+            document.getElementById('editAgentModal').classList.add('active');
+        }
+
+        // Close Edit Modal
+        function closeEditModal() {
+            document.getElementById('editAgentModal').classList.remove('active');
+        }
+
+        // Save Agent Edit
+        function saveAgentEdit() {
+            showToast('✅ Agent 已更新');
+            closeEditModal();
+            renderAgents();
+        }
+
+        // Toggle Agent
+        function toggleAgent(agentId) {
+            const agent = agents.find(a => a.id === agentId);
+            if (!agent) return;
+            
+            agent.status = agent.status === 'online' ? 'offline' : 'online';
+            showToast(`✅ Agent 已${agent.status === 'online' ? '启动' : '停止'}`);
+            renderAgents();
+        }
+
+        // Delete Agent
+        function deleteAgent(agentId) {
+            if (!confirm('确定要删除这个 Agent 吗？此操作不可恢复。')) return;
+            
+            const index = agents.findIndex(a => a.id === agentId);
+            if (index > -1) {
+                agents.splice(index, 1);
+                showToast('🗑️ Agent 已删除');
+                renderAgents();
+            }
+        }
+
+        // Show Agent Detail
+        function showAgentDetail(agentId) {
+            const agent = agents.find(a => a.id === agentId);
+            if (!agent) return;
+            
+            showToast(`📊 查看 ${agent.name} 详情 (功能开发中)`);
+        }
+
+        // Close modal on overlay click
+        document.getElementById('newAgentModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+        
+        document.getElementById('editAgentModal').addEventListener('click', function(e) {
+            if (e.target === this) closeEditModal();
+        });
+
+        // Initialize
+        renderAgents();
+    </script>
+</body>
+</html>

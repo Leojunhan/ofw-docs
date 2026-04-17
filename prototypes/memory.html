@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>记忆中心 - Hunter Agent 管理系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-dark: #5b21b6;
+            --primary-light: #8b5cf6;
+            
+            --bg-primary: #fafbfc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f6f8fa;
+            --text-primary: #1a1a2e;
+            --text-secondary: #6b7280;
+            --text-tertiary: #9ca3af;
+            --border-light: rgba(0, 0, 0, 0.06);
+            --border-medium: rgba(0, 0, 0, 0.12);
+            
+            --success: #10b981;
+            --success-bg: rgba(16, 185, 129, 0.1);
+            --warning: #f59e0b;
+            --warning-bg: rgba(245, 158, 11, 0.1);
+            --danger: #ef4444;
+            --danger-bg: rgba(239, 68, 68, 0.1);
+            --info: #3b82f6;
+            --info-bg: rgba(59, 130, 246, 0.1);
+            
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+            --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.15);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+        
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 260px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-light);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo {
+            width: 36px;
+            height: 36px;
+            background: var(--primary-gradient);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .brand-name {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .nav-section {
+            padding: 16px 12px;
+            flex: 1;
+        }
+        
+        .nav-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 0 12px;
+            margin-bottom: 8px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 11px 12px;
+            margin: 2px 0;
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .nav-item:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            transform: translateX(2px);
+        }
+        
+        .nav-item.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
+        }
+        
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            min-height: 100vh;
+        }
+        
+        .top-bar {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid var(--border-light);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .content-area {
+            padding: 32px;
+        }
+        
+        .action-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            gap: 16px;
+        }
+        
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            border: 1.5px solid var(--border-light);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            background: var(--bg-secondary);
+            transition: all 0.2s;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-tertiary);
+        }
+        
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.35);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-light);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+            border-color: var(--border-medium);
+        }
+        
+        /* Memory Stats */
+        .memory-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        
+        .memory-stat-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            border: 1px solid var(--border-light);
+            transition: all 0.3s;
+        }
+        
+        .memory-stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .memory-stat-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .memory-stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            background: var(--warning-bg);
+        }
+        
+        .memory-stat-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+        
+        .memory-stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .memory-stat-sub {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+        }
+        
+        /* Memory Grid */
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 20px;
+        }
+        
+        .memory-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-light);
+            padding: 24px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .memory-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .memory-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .memory-card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .memory-card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .memory-card-meta {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+        
+        .memory-card-content {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 16px;
+            max-height: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+        
+        .memory-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-light);
+        }
+        
+        .memory-card-agent {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .memory-card-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .memory-action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .memory-action-btn:hover {
+            background: var(--primary-gradient);
+            color: white;
+        }
+        
+        /* Tags */
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            gap: 4px;
+        }
+        
+        .tag.user {
+            background: var(--info-bg);
+            color: var(--info);
+        }
+        
+        .tag.conversation {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+        
+        .tag.system {
+            background: var(--text-tertiary);
+            color: white;
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: var(--radius-xl);
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .modal-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .modal-close:hover {
+            background: var(--danger-bg);
+            color: var(--danger);
+        }
+        
+        .modal-body {
+            padding: 32px;
+        }
+        
+        .modal-footer {
+            padding: 20px 32px;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            background: var(--bg-tertiary);
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 8px;
+        }
+        
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid var(--border-light);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+        }
+        
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+        }
+        
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 16px 20px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-light);
+            display: none;
+            align-items: center;
+            gap: 12px;
+            z-index: 2000;
+        }
+        
+        .toast.show {
+            display: flex;
+            animation: slideInRight 0.3s;
+        }
+        
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .toast-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        .toast-icon.success {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">H</div>
+                <span class="brand-name">Hunter</span>
+            </div>
+            
+            <nav class="nav-section">
+                <div class="nav-label">主菜单</div>
+                <a href="dashboard-v2.html" class="nav-item" onclick="setActive(this)">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="agents-v2.html" class="nav-item" onclick="setActive(this)">
+                    <span class="nav-icon">🤖</span>
+                    <span>Agent 管理</span>
+                </a>
+                <a href="skills.html" class="nav-item" onclick="setActive(this)">
+                    <span class="nav-icon">⚡</span>
+                    <span>Skill 管理</span>
+                </a>
+                <a href="executions.html" class="nav-item" onclick="setActive(this)">
+                    <span class="nav-icon">📝</span>
+                    <span>执行记录</span>
+                </a>
+                <a href="memory.html" class="nav-item active" onclick="setActive(this)">
+                    <span class="nav-icon">🧠</span>
+                    <span>记忆中心</span>
+                </a>
+                
+                <div class="nav-label" style="margin-top: 24px;">系统</div>
+                <a href="settings.html" class="nav-item" onclick="setActive(this)">
+                    <span class="nav-icon">⚙️</span>
+                    <span>系统设置</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="dashboard-v2.html" class="nav-item" onclick="showToast('👋 已退出登录')">
+                    <span class="nav-icon">🚪</span>
+                    <span>退出登录</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="page-header">
+                    <h1 class="page-title">🧠 记忆中心</h1>
+                    <span class="page-subtitle">管理 Agent 的记忆和上下文</span>
+                </div>
+                <div class="user-menu">
+                    <button class="icon-btn" onclick="showToast('🔍 搜索功能开发中')" title="搜索">🔍</button>
+                    <button class="icon-btn" onclick="showToast('❓ 帮助中心即将上线')" title="帮助">❓</button>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Action Bar -->
+                <div class="action-bar">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" class="search-input" placeholder="搜索记忆..." id="searchInput" onkeyup="filterMemories()">
+                    </div>
+                    <button class="btn btn-primary" onclick="showNewMemoryModal()">
+                        <span>➕</span> 新建记忆
+                    </button>
+                </div>
+
+                <!-- Memory Stats -->
+                <div class="memory-stats">
+                    <div class="memory-stat-card">
+                        <div class="memory-stat-header">
+                            <div class="memory-stat-icon">📦</div>
+                            <span class="memory-stat-label">总记忆数</span>
+                        </div>
+                        <div class="memory-stat-value">2,458</div>
+                        <div class="memory-stat-sub">+156 今日</div>
+                    </div>
+                    <div class="memory-stat-card">
+                        <div class="memory-stat-header">
+                            <div class="memory-stat-icon" style="background: var(--info-bg);">👤</div>
+                            <span class="memory-stat-label">用户记忆</span>
+                        </div>
+                        <div class="memory-stat-value">1,234</div>
+                        <div class="memory-stat-sub">892 活跃用户</div>
+                    </div>
+                    <div class="memory-stat-card">
+                        <div class="memory-stat-header">
+                            <div class="memory-stat-icon" style="background: var(--success-bg);">💬</div>
+                            <span class="memory-stat-label">对话历史</span>
+                        </div>
+                        <div class="memory-stat-value">8,956</div>
+                        <div class="memory-stat-sub">3,245 今日</div>
+                    </div>
+                    <div class="memory-stat-card">
+                        <div class="memory-stat-header">
+                            <div class="memory-stat-icon" style="background: rgba(139, 92, 246, 0.1);">💾</div>
+                            <span class="memory-stat-label">存储使用</span>
+                        </div>
+                        <div class="memory-stat-value">45.2%</div>
+                        <div class="memory-stat-sub">2.3GB / 5GB</div>
+                    </div>
+                </div>
+
+                <!-- Memory Grid -->
+                <div class="memory-grid" id="memoryGrid">
+                    <!-- Memory Cards will be rendered by JS -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- New Memory Modal -->
+    <div class="modal-overlay" id="newMemoryModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">🧠 新建记忆</h2>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">记忆标题</label>
+                    <input type="text" class="form-input" id="memoryTitle" placeholder="例如：用户联系记录">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">记忆类型</label>
+                    <select class="form-select" id="memoryType">
+                        <option value="user">用户记忆</option>
+                        <option value="conversation">对话历史</option>
+                        <option value="system">系统记忆</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">关联 Agent</label>
+                    <select class="form-select" id="memoryAgent">
+                        <option value="fb_monitor">FB 社群监控 Agent</option>
+                        <option value="risk_assess">风控预审 Agent</option>
+                        <option value="loan_management">贷后管理 Agent</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">记忆内容</label>
+                    <textarea class="form-input form-textarea" id="memoryContent" placeholder="输入记忆内容..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">过期时间</label>
+                    <select class="form-select" id="memoryExpiry">
+                        <option value="never">永不过期</option>
+                        <option value="30d">30 天</option>
+                        <option value="90d">90 天</option>
+                        <option value="1y">1 年</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+                <button class="btn btn-primary" onclick="createMemory()">创建</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div class="toast-icon success" id="toastIcon">✅</div>
+        <div class="toast-message" id="toastMessage">操作成功</div>
+    </div>
+
+    <script>
+        // Memory Data
+        const memories = [
+            {
+                id: 1,
+                title: '用户联系记录 - Maria Santos',
+                type: 'user',
+                typeLabel: '用户记忆',
+                agent: 'FB 社群监控 Agent',
+                content: '用户 Maria Santos 于 2026-04-15 通过 FB 社群触达，表示有借贷需求，金额约$500，用于家庭应急。已引导至申请流程。',
+                createdAt: '2026-04-15 14:30',
+                tags: ['潜在用户', 'FB 社群', '$500']
+            },
+            {
+                id: 2,
+                title: '对话历史 - Juan Dela Cruz',
+                type: 'conversation',
+                typeLabel: '对话历史',
+                agent: '风控预审 Agent',
+                content: '用户 Juan 完成了贷款申请，提交材料包括：护照、工作证明、汇款记录。AI 预审通过，信用评分 720，建议放款$800。',
+                createdAt: '2026-04-15 10:15',
+                tags: ['申请中', '信用良好']
+            },
+            {
+                id: 3,
+                title: '还款提醒记录 - Ana Reyes',
+                type: 'user',
+                typeLabel: '用户记忆',
+                agent: '贷后管理 Agent',
+                content: '用户 Ana 的贷款将于 2026-04-20 到期，金额$600。已发送 D-5 提醒，用户回复确认会按时还款。',
+                createdAt: '2026-04-14 09:00',
+                tags: ['还款中', '良好记录']
+            },
+            {
+                id: 4,
+                title: '被拒用户培育 - Pedro Garcia',
+                type: 'user',
+                typeLabel: '用户记忆',
+                agent: '被拒留存 Agent',
+                content: '用户 Pedro 因信用分不足被拒（评分 580）。已发送温暖告知和改善建议，建议 90 天后重新申请。',
+                createdAt: '2026-04-13 16:45',
+                tags: ['被拒', '培育中']
+            },
+            {
+                id: 5,
+                title: 'KOL 合作记录 - OFW Influencer',
+                type: 'system',
+                typeLabel: '系统记忆',
+                agent: 'KOL 协作 Agent',
+                content: '与菲律宾网红@OFWLife 达成合作，佣金 15%/成功放款。预计带来 500+ 意向用户。',
+                createdAt: '2026-04-12 11:20',
+                tags: ['KOL', '合作']
+            },
+            {
+                id: 6,
+                title: '对话历史 - Luisa Fernandez',
+                type: 'conversation',
+                typeLabel: '对话历史',
+                agent: 'FB 社群监控 Agent',
+                content: '用户 Luisa 在 FB 社群询问贷款流程，Agent 自动回复了详细步骤，用户表示理解并准备申请。',
+                createdAt: '2026-04-16 08:30',
+                tags: ['咨询', '高意向']
+            }
+        ];
+
+        // Render Memory Grid
+        function renderMemories(filterText = '') {
+            const grid = document.getElementById('memoryGrid');
+            const filtered = memories.filter(memory => 
+                memory.title.toLowerCase().includes(filterText.toLowerCase()) ||
+                memory.content.toLowerCase().includes(filterText.toLowerCase())
+            );
+            
+            grid.innerHTML = filtered.map(memory => `
+                <div class="memory-card" onclick="showMemoryDetail(${memory.id})">
+                    <div class="memory-card-header">
+                        <div class="memory-card-icon">🧠</div>
+                        <div>
+                            <div class="memory-card-title">${memory.title}</div>
+                            <div style="font-size: 12px; color: var(--text-tertiary);">${memory.agent}</div>
+                        </div>
+                    </div>
+                    <div class="memory-card-meta">
+                        <span class="tag ${memory.type}">${memory.typeLabel}</span>
+                        <span>🕐 ${memory.createdAt}</span>
+                    </div>
+                    <div class="memory-card-content">${memory.content}</div>
+                    <div class="memory-card-footer">
+                        <div class="memory-card-agent">
+                            <span>🤖</span>
+                            <span>${memory.agent}</span>
+                        </div>
+                        <div class="memory-card-actions">
+                            <button class="memory-action-btn" onclick="event.stopPropagation(); showEditMemory(${memory.id})" title="编辑">✏️</button>
+                            <button class="memory-action-btn" onclick="event.stopPropagation(); deleteMemory(${memory.id})" title="删除" style="color: var(--danger);">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter Memories
+        function filterMemories() {
+            const text = document.getElementById('searchInput').value;
+            renderMemories(text);
+        }
+
+        // Set Active Navigation
+        function setActive(element) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            element.classList.add('active');
+        }
+
+        // Show Toast
+        function showToast(message, icon = '✅') {
+            const toast = document.getElementById('toast');
+            const toastIcon = document.getElementById('toastIcon');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastIcon.textContent = icon;
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Show New Memory Modal
+        function showNewMemoryModal() {
+            document.getElementById('newMemoryModal').classList.add('active');
+        }
+
+        // Close Modal
+        function closeModal() {
+            document.getElementById('newMemoryModal').classList.remove('active');
+        }
+
+        // Create Memory
+        function createMemory() {
+            const title = document.getElementById('memoryTitle').value;
+            const type = document.getElementById('memoryType').value;
+            const content = document.getElementById('memoryContent').value;
+            
+            if (!title || !content) {
+                showToast('❌ 请填写标题和内容', '❌');
+                return;
+            }
+            
+            memories.unshift({
+                id: memories.length + 1,
+                title: title,
+                type: type,
+                typeLabel: type === 'user' ? '用户记忆' : type === 'conversation' ? '对话历史' : '系统记忆',
+                agent: document.getElementById('memoryAgent').value,
+                content: content,
+                createdAt: new Date().toLocaleString('zh-CN'),
+                tags: ['新建']
+            });
+            
+            showToast('✅ 记忆创建成功');
+            closeModal();
+            renderMemories();
+            
+            // Reset form
+            document.getElementById('memoryTitle').value = '';
+            document.getElementById('memoryContent').value = '';
+        }
+
+        // Show Edit Memory
+        function showEditMemory(memoryId) {
+            const memory = memories.find(m => m.id === memoryId);
+            if (!memory) return;
+            
+            showToast(`✏️ 编辑 ${memory.title} (功能开发中)`);
+        }
+
+        // Delete Memory
+        function deleteMemory(memoryId) {
+            if (!confirm('确定要删除这条记忆吗？')) return;
+            
+            const index = memories.findIndex(m => m.id === memoryId);
+            if (index > -1) {
+                memories.splice(index, 1);
+                showToast('🗑️ 记忆已删除');
+                renderMemories();
+            }
+        }
+
+        // Show Memory Detail
+        function showMemoryDetail(memoryId) {
+            const memory = memories.find(m => m.id === memoryId);
+            if (!memory) return;
+            
+            showToast(`📊 查看 ${memory.title} 详情 (功能开发中)`);
+        }
+
+        // Close modal on overlay click
+        document.getElementById('newMemoryModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // Initialize
+        renderMemories();
+    </script>
+</body>
+</html>

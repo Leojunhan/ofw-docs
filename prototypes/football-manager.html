@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hunter FC - Agent 足球经理</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --pitch-green: #2ecc71;
+            --pitch-dark: #27ae60;
+            --line-white: rgba(255, 255, 255, 0.9);
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-tertiary: #64748b;
+            --border-light: rgba(255, 255, 255, 0.1);
+            --accent-gold: #fbbf24;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+        
+        /* 顶部导航 - 俱乐部信息 */
+        .club-header {
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            border-bottom: 1px solid var(--border-light);
+            padding: 20px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .club-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .club-logo {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .club-details h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .club-details .subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .club-stats {
+            display: flex;
+            gap: 32px;
+        }
+        
+        .club-stat {
+            text-align: center;
+        }
+        
+        .club-stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-gold);
+        }
+        
+        .club-stat-label {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+        }
+        
+        /* 主容器 */
+        .main-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 300px;
+            gap: 1px;
+            background: var(--border-light);
+            min-height: calc(100vh - 100px);
+        }
+        
+        /* 左侧面板 - 阵容 */
+        .squad-panel {
+            background: var(--bg-secondary);
+            padding: 24px;
+            overflow-y: auto;
+        }
+        
+        .panel-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .formation-selector {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .formation-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+        
+        .formation-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        
+        .formation-btn {
+            padding: 10px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .formation-btn.active {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+        }
+        
+        .formation-btn:hover:not(.active) {
+            border-color: var(--text-tertiary);
+        }
+        
+        /* 球员卡片（Agent 卡片） */
+        .player-card {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .player-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary-light);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+        }
+        
+        .player-card.starting {
+            border-color: var(--success);
+        }
+        
+        .player-card.substitute {
+            border-color: var(--text-tertiary);
+        }
+        
+        .player-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .player-position {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            color: white;
+        }
+        
+        .player-position.GK { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
+        .player-position.DEF { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
+        .player-position.MID { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .player-position.ATT { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+        
+        .player-info {
+            flex: 1;
+        }
+        
+        .player-name {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+        
+        .player-role {
+            font-size: 11px;
+            color: var(--text-tertiary);
+        }
+        
+        .player-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        
+        .player-stat {
+            text-align: center;
+            padding: 8px;
+            background: var(--bg-primary);
+            border-radius: 8px;
+        }
+        
+        .player-stat-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .player-stat-label {
+            font-size: 9px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+        }
+        
+        .player-status {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid var(--border-light);
+        }
+        
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+        
+        .status-dot.busy { background: var(--warning); }
+        .status-dot.offline { background: var(--text-tertiary); }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* 中间 - 战术板（足球场） */
+        .tactics-panel {
+            background: var(--pitch-green);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .pitch {
+            flex: 1;
+            background: repeating-linear-gradient(
+                0deg,
+                var(--pitch-green) 0px,
+                var(--pitch-green) 40px,
+                var(--pitch-dark) 40px,
+                var(--pitch-dark) 80px
+            );
+            position: relative;
+            padding: 40px;
+        }
+        
+        /* 足球场线条 */
+        .pitch-line {
+            position: absolute;
+            background: var(--line-white);
+            opacity: 0.6;
+        }
+        
+        .pitch-line.horizontal {
+            width: 100%;
+            height: 2px;
+            left: 0;
+        }
+        
+        .pitch-line.vertical {
+            height: 100%;
+            width: 2px;
+            top: 0;
+        }
+        
+        .pitch-line.top { top: 40px; }
+        .pitch-line.bottom { bottom: 40px; }
+        .pitch-line.center { top: 50%; transform: translateY(-50%); }
+        .pitch-line.left { left: 40px; }
+        .pitch-line.right { right: 40px; }
+        .pitch-line.middle { left: 50%; transform: translateX(-50%); }
+        
+        .center-circle {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border: 2px solid var(--line-white);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.6;
+        }
+        
+        /* 战术板上的球员位置 */
+        .tactic-player {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            border: 3px solid white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+        }
+        
+        .tactic-player:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+        
+        .tactic-player.active {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
+        }
+        
+        .tactic-player-number {
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .tactic-player-name {
+            font-size: 9px;
+            color: var(--text-secondary);
+            text-align: center;
+            max-width: 50px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        /* 比赛控制 */
+        .match-controls {
+            background: var(--bg-secondary);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            border-top: 1px solid var(--border-light);
+        }
+        
+        .match-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .match-btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .match-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+        
+        .match-btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        .match-btn-secondary:hover {
+            background: var(--bg-primary);
+        }
+        
+        .match-timer {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-gold);
+            font-family: 'SF Mono', monospace;
+        }
+        
+        /* 右侧面板 - 比赛数据 */
+        .stats-panel {
+            background: var(--bg-secondary);
+            padding: 24px;
+            overflow-y: auto;
+        }
+        
+        .stat-section {
+            margin-bottom: 24px;
+        }
+        
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .stat-title {
+            font-size: 14px;
+            font-weight: 700;
+        }
+        
+        .stat-action {
+            font-size: 12px;
+            color: var(--primary-light);
+            cursor: pointer;
+        }
+        
+        .live-feed {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 16px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .feed-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .feed-item:last-child {
+            border-bottom: none;
+        }
+        
+        .feed-time {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            font-family: 'SF Mono', monospace;
+            min-width: 40px;
+        }
+        
+        .feed-icon {
+            font-size: 14px;
+        }
+        
+        .feed-content {
+            flex: 1;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .feed-content strong {
+            color: var(--text-primary);
+        }
+        
+        /* 球员详情模态框 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .modal-close:hover {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .modal-body {
+            padding: 32px;
+        }
+        
+        .player-detail-header {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .player-detail-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 16px;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+        
+        .player-detail-info h2 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .player-detail-role {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+        
+        .player-detail-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .detail-stat {
+            background: var(--bg-tertiary);
+            padding: 16px;
+            border-radius: 12px;
+        }
+        
+        .detail-stat-label {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            margin-bottom: 8px;
+        }
+        
+        .detail-stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .player-skills {
+            margin-top: 24px;
+        }
+        
+        .skill-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin: 4px;
+            gap: 6px;
+        }
+        
+        .skill-tag .icon {
+            font-size: 14px;
+        }
+        
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-light);
+            padding: 12px 32px;
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            z-index: 100;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            border-radius: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        
+        .nav-item:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        .nav-item.active {
+            color: var(--accent-gold);
+            background: rgba(251, 191, 36, 0.1);
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+        }
+        
+        .nav-label {
+            font-size: 11px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- 俱乐部头部 -->
+    <header class="club-header">
+        <div class="club-info">
+            <div class="club-logo">🏆</div>
+            <div class="club-details">
+                <h1>Hunter FC</h1>
+                <div class="subtitle">OFW AI Agent 俱乐部 · 2026 赛季</div>
+            </div>
+        </div>
+        <div class="club-stats">
+            <div class="club-stat">
+                <div class="club-stat-value">15</div>
+                <div class="club-stat-label">球员</div>
+            </div>
+            <div class="club-stat">
+                <div class="club-stat-value">24</div>
+                <div class="club-stat-label">Skills</div>
+            </div>
+            <div class="club-stat">
+                <div class="club-stat-value">1,234</div>
+                <div class="club-stat-label">已比赛</div>
+            </div>
+            <div class="club-stat">
+                <div class="club-stat-value">80%</div>
+                <div class="club-stat-label">胜率</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主容器 -->
+    <div class="main-container">
+        <!-- 左侧 - 阵容面板 -->
+        <aside class="squad-panel">
+            <div class="panel-title">⚽ 一线队阵容</div>
+            
+            <!-- 阵型选择 -->
+            <div class="formation-selector">
+                <div class="formation-label">当前阵型</div>
+                <div class="formation-options">
+                    <button class="formation-btn active" onclick="setFormation('4-3-3')">4-3-3</button>
+                    <button class="formation-btn" onclick="setFormation('4-4-2')">4-4-2</button>
+                    <button class="formation-btn" onclick="setFormation('3-5-2')">3-5-2</button>
+                </div>
+            </div>
+            
+            <!-- 首发球员 -->
+            <div class="panel-title" style="margin-top: 24px;">🔥 首发阵容 (11)</div>
+            
+            <div class="player-card starting" onclick="showPlayerDetail(1)">
+                <div class="player-header">
+                    <div class="player-position GK">GK</div>
+                    <div class="player-info">
+                        <div class="player-name">风控预审 Agent</div>
+                        <div class="player-role">守门员 · 最后一道防线</div>
+                    </div>
+                </div>
+                <div class="player-stats">
+                    <div class="player-stat">
+                        <div class="player-stat-value">92</div>
+                        <div class="player-stat-label">准确率</div>
+                    </div>
+                    <div class="player-stat">
+                        <div class="player-stat-value">0.3s</div>
+                        <div class="player-stat-label">响应</div>
+                    </div>
+                    <div class="player-stat">
+                        <div class="player-stat-value">1,234</div>
+                        <div class="player-stat-label">扑救</div>
+                    </div>
+                </div>
+                <div class="player-status">
+                    <span class="status-dot"></span>
+                    <span>状态火热 · 连续 5 场零封</span>
+                </div>
+            </div>
+            
+            <div class="player-card starting" onclick="showPlayerDetail(2)">
+                <div class="player-header">
+                    <div class="player-position DEF">DEF</div>
+                    <div class="player-info">
+                        <div class="player-name">反欺诈 Agent</div>
+                        <div class="player-role">后卫 · 防线核心</div>
+                    </div>
+                </div>
+                <div class="player-stats">
+                    <div class="player-stat">
+                        <div class="player-stat-value">88</div>
+                        <div class="player-stat-label">拦截</div>
+                    </div>
+                    <div class="player-stat">
+                        <div class="player-stat-value">95%</div>
+                        <div class="player-stat-label">识别</div>
+                    </div>
+                    <div class="player-stat">
+                        <div class="player-stat-value">156</div>
+                        <div class="player-stat-label">抢断</div>
+                    </div>
+                </div>
+                <div class="player-status">
+                    <span class="status-dot"></span>
+                    <span>状态良好</span>
+                </div>
+            </div>
+            
+            <div class="player-card starting" onclick="showPlayerDetail(3)">
+                <div class="player-header">
+                    <div class="player-position MID">MID</div>
+                    <div class="player-info">
+                        <div class="player-name">FB 社群监控 Agent</div>
+                        <div class="player-role">中场 · 组织核心</div>
+                    </div>
+                </div>
+                <div class="player-stats">
+                    <div class="player-stat">
+                        <div class="player-stat-value">2,458</div>
+                        <div class="player-stat-label">触达</div>
+                    </div>
+                    <div class="player-stat">
+                        <div class="player-stat-value">15%</div>
+                        <div class="player-stat-label">转化</div>
+                    </div>
+                    <div class="player-stat">
+                        <div class="player-stat-value">89%</div>
+                        <div class="player-stat-label">在线</div>
+                    </div>
+                </div>
+                <div class="player-status">
+                    <span class="status-dot"></span>
+                    <span>状态火热 · 本周最佳</span>
+                </div>
+            </div>
+            
+            <div class="player-card starting" onclick="showPlayerDetail(4)">
+                <div class="player-header">
+                    <div class="player-position ATT">ATT</div>
+                    <div class="player-info">
+                        <div class="player-name">KOL 协作 Agent</div>
+                        <div class="player-role">前锋 · 得分手</div>
+                    </div>
+                </div>
+                <div class="player-stats">
+                    <div class="player-stat">
+                        <div class="player-stat-value">12</div>
+                        <div class="player-stat-label">合作</div>
+                    </div>
+                    <div class="player-stat">
+                        <div class="player-stat-value">3,000</div>
+                        <div class="player-stat-label">获客</div>
+                    </div>
+                    <div class="player-stat">
+                        <div class="player-stat-value">$3</div>
+                        <div class="player-stat-label">成本</div>
+                    </div>
+                </div>
+                <div class="player-status">
+                    <span class="status-dot busy"></span>
+                    <span>比赛中 · 正在谈判</span>
+                </div>
+            </div>
+            
+            <!-- 替补球员 -->
+            <div class="panel-title" style="margin-top: 24px;">💺 替补席 (4)</div>
+            
+            <div class="player-card substitute" onclick="showPlayerDetail(5)">
+                <div class="player-header">
+                    <div class="player-position MID">MID</div>
+                    <div class="player-info">
+                        <div class="player-name">SEO 内容 Agent</div>
+                        <div class="player-role">中场 · 长传调度</div>
+                    </div>
+                </div>
+                <div class="player-stats">
+                    <div class="player-stat">
+                        <div class="player-stat-value">45</div>
+                        <div class="player-stat-label">文章</div>
+                    </div>
+                    <div class="player-stat">
+                        <div class="player-stat-value">1,000</div>
+                        <div class="player-stat-label">流量</div>
+                    </div>
+                    <div class="player-stat">
+                        <div class="player-stat-value">$0.8</div>
+                        <div class="player-stat-label">成本</div>
+                    </div>
+                </div>
+                <div class="player-status">
+                    <span class="status-dot offline"></span>
+                    <span>待命 · 可随时上场</span>
+                </div>
+            </div>
+            
+            <div class="player-card substitute" onclick="showPlayerDetail(6)">
+                <div class="player-header">
+                    <div class="player-position ATT">ATT</div>
+                    <div class="player-info">
+                        <div class="player-name">贷后管理 Agent</div>
+                        <div class="player-role">前锋 · 定位球专家</div>
+                    </div>
+                </div>
+                <div class="player-stats">
+                    <div class="player-stat">
+                        <div class="player-stat-value">92%</div>
+                        <div class="player-stat-label">还款</div>
+                    </div>
+                    <div class="player-stat">
+                        <div class="player-stat-value">35%</div>
+                        <div class="player-stat-label">复借</div>
+                    </div>
+                    <div class="player-stat">
+                        <div class="player-stat-value">1,234</div>
+                        <div class="player-stat-label">提醒</div>
+                    </div>
+                </div>
+                <div class="player-status">
+                    <span class="status-dot"></span>
+                    <span>状态良好</span>
+                </div>
+            </div>
+            
+            <!-- 新建球员按钮 -->
+            <button class="match-btn match-btn-primary" onclick="showNewPlayerModal()" style="width: 100%; margin-top: 16px;">
+                <span>➕</span> 签约新球员 (MetaAgent)
+            </button>
+        </aside>
+
+        <!-- 中间 - 战术板 -->
+        <main class="tactics-panel">
+            <!-- 足球场 -->
+            <div class="pitch">
+                <!-- 球场线条 -->
+                <div class="pitch-line horizontal top"></div>
+                <div class="pitch-line horizontal bottom"></div>
+                <div class="pitch-line horizontal center"></div>
+                <div class="pitch-line vertical left"></div>
+                <div class="pitch-line vertical right"></div>
+                <div class="pitch-line vertical middle"></div>
+                <div class="center-circle"></div>
+                
+                <!-- 战术板上的球员位置 (4-3-3 阵型) -->
+                <!-- 门将 -->
+                <div class="tactic-player active" style="top: 85%; left: 50%;" onclick="showPlayerDetail(1)">
+                    <div class="tactic-player-number">1</div>
+                    <div class="tactic-player-name">风控</div>
+                </div>
+                
+                <!-- 后卫 -->
+                <div class="tactic-player" style="top: 70%; left: 30%;" onclick="showPlayerDetail(2)">
+                    <div class="tactic-player-number">2</div>
+                    <div class="tactic-player-name">反欺诈</div>
+                </div>
+                <div class="tactic-player" style="top: 70%; left: 50%;" onclick="showPlayerDetail(7)">
+                    <div class="tactic-player-number">5</div>
+                    <div class="tactic-player-name">信用评分</div>
+                </div>
+                <div class="tactic-player" style="top: 70%; left: 70%;" onclick="showPlayerDetail(8)">
+                    <div class="tactic-player-number">6</div>
+                    <div class="tactic-player-name">合规</div>
+                </div>
+                
+                <!-- 中场 -->
+                <div class="tactic-player" style="top: 50%; left: 20%;" onclick="showPlayerDetail(3)">
+                    <div class="tactic-player-number">8</div>
+                    <div class="tactic-player-name">FB 社群</div>
+                </div>
+                <div class="tactic-player" style="top: 50%; left: 50%;" onclick="showPlayerDetail(9)">
+                    <div class="tactic-player-number">10</div>
+                    <div class="tactic-player-name">意图</div>
+                </div>
+                <div class="tactic-player" style="top: 50%; left: 80%;" onclick="showPlayerDetail(5)">
+                    <div class="tactic-player-number">7</div>
+                    <div class="tactic-player-name">SEO</div>
+                </div>
+                
+                <!-- 前锋 -->
+                <div class="tactic-player" style="top: 30%; left: 30%;" onclick="showPlayerDetail(4)">
+                    <div class="tactic-player-number">11</div>
+                    <div class="tactic-player-name">KOL</div>
+                </div>
+                <div class="tactic-player" style="top: 30%; left: 50%;" onclick="showPlayerDetail(10)">
+                    <div class="tactic-player-number">9</div>
+                    <div class="tactic-player-name">获客</div>
+                </div>
+                <div class="tactic-player" style="top: 30%; left: 70%;" onclick="showPlayerDetail(6)">
+                    <div class="tactic-player-number">14</div>
+                    <div class="tactic-player-name">贷后</div>
+                </div>
+            </div>
+            
+            <!-- 比赛控制 -->
+            <div class="match-controls">
+                <button class="match-btn match-btn-secondary" onclick="showToast('⏸️ 比赛已暂停')">
+                    <span>⏸️</span> 暂停
+                </button>
+                <div class="match-timer" id="matchTimer">32:15</div>
+                <button class="match-btn match-btn-primary" onclick="toggleMatch()" id="matchBtn">
+                    <span>▶️</span> 开始比赛
+                </button>
+                <button class="match-btn match-btn-secondary" onclick="showToast('🔄 战术已调整')">
+                    <span>🔄</span> 调整战术
+                </button>
+            </div>
+        </main>
+
+        <!-- 右侧 - 比赛数据 -->
+        <aside class="stats-panel">
+            <!-- 实时战报 -->
+            <div class="stat-section">
+                <div class="stat-header">
+                    <div class="stat-title">📻 实时战报</div>
+                    <div class="stat-action" onclick="showToast('📊 完整战报即将上线')">查看全部</div>
+                </div>
+                <div class="live-feed" id="liveFeed">
+                    <div class="feed-item">
+                        <div class="feed-time">32'</div>
+                        <div class="feed-icon">⚽</div>
+                        <div class="feed-content"><strong>进球！</strong> KOL 协作 Agent 完成第 12 次合作，预计带来 3,000 用户</div>
+                    </div>
+                    <div class="feed-item">
+                        <div class="feed-time">28'</div>
+                        <div class="feed-icon">🛡️</div>
+                        <div class="feed-content"><strong>精彩扑救！</strong> 风控预审 Agent 拦截可疑申请，避免潜在损失$500</div>
+                    </div>
+                    <div class="feed-item">
+                        <div class="feed-time">22'</div>
+                        <div class="feed-icon">📢</div>
+                        <div class="feed-content"><strong>助攻！</strong> FB 社群监控 Agent 发现高意向用户，转化至申请流程</div>
+                    </div>
+                    <div class="feed-item">
+                        <div class="feed-time">15'</div>
+                        <div class="feed-icon">🔄</div>
+                        <div class="feed-content"><strong>换人调整</strong> SEO 内容 Agent 替补上场，加强长尾流量</div>
+                    </div>
+                    <div class="feed-item">
+                        <div class="feed-time">8'</div>
+                        <div class="feed-icon">⚠️</div>
+                        <div class="feed-content"><strong>黄牌警告</strong> 反欺诈 Agent 触发严格模式，误报率略有上升</div>
+                    </div>
+                    <div class="feed-item">
+                        <div class="feed-time">1'</div>
+                        <div class="feed-icon">🏁</div>
+                        <div class="feed-content"><strong>比赛开始！</strong> Hunter FC vs 市场竞争，本赛季第 1,235 场</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 比赛统计 -->
+            <div class="stat-section">
+                <div class="stat-header">
+                    <div class="stat-title">📊 比赛统计</div>
+                    <div class="stat-action" onclick="showToast('📊 详细统计即将上线')">详情</div>
+                </div>
+                <div class="live-feed">
+                    <div class="feed-item">
+                        <div class="feed-time">控球</div>
+                        <div class="feed-content" style="flex: 1; display: flex; align-items: center; gap: 8px;">
+                            <span style="color: var(--success);">58%</span>
+                            <div style="flex: 1; height: 4px; background: var(--bg-primary); border-radius: 2px;">
+                                <div style="width: 58%; height: 100%; background: var(--success); border-radius: 2px;"></div>
+                            </div>
+                            <span>42%</span>
+                        </div>
+                    </div>
+                    <div class="feed-item">
+                        <div class="feed-time">射门</div>
+                        <div class="feed-content" style="flex: 1; display: flex; align-items: center; gap: 8px;">
+                            <span style="color: var(--success);">12</span>
+                            <div style="flex: 1; height: 4px; background: var(--bg-primary); border-radius: 2px;">
+                                <div style="width: 75%; height: 100%; background: var(--success); border-radius: 2px;"></div>
+                            </div>
+                            <span>4</span>
+                        </div>
+                    </div>
+                    <div class="feed-item">
+                        <div class="feed-time">传球</div>
+                        <div class="feed-content" style="flex: 1; display: flex; align-items: center; gap: 8px;">
+                            <span style="color: var(--success);">1,234</span>
+                            <div style="flex: 1; height: 4px; background: var(--bg-primary); border-radius: 2px;">
+                                <div style="width: 85%; height: 100%; background: var(--success); border-radius: 2px;"></div>
+                            </div>
+                            <span>892</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 下场对手 -->
+            <div class="stat-section">
+                <div class="stat-header">
+                    <div class="stat-title">🏟️ 下场对手</div>
+                </div>
+                <div style="background: var(--bg-tertiary); border-radius: 12px; padding: 16px; text-align: center;">
+                    <div style="font-size: 32px; margin-bottom: 8px;">🏦</div>
+                    <div style="font-size: 14px; font-weight: 700; margin-bottom: 4px;">传统银行</div>
+                    <div style="font-size: 12px; color: var(--text-secondary);">2026-04-20 15:00</div>
+                    <div style="font-size: 11px; color: var(--text-tertiary); margin-top: 8px;">主场 · OFW 信贷市场</div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <a href="dashboard-v2.html" class="nav-item">
+            <span class="nav-icon">📊</span>
+            <span class="nav-label">Dashboard</span>
+        </a>
+        <a href="#" class="nav-item active">
+            <span class="nav-icon">⚽</span>
+            <span class="nav-label">战术板</span>
+        </a>
+        <a href="agents-v2.html" class="nav-item">
+            <span class="nav-icon">👥</span>
+            <span class="nav-label">阵容</span>
+        </a>
+        <a href="skills.html" class="nav-item">
+            <span class="nav-icon">⚡</span>
+            <span class="nav-label">训练</span>
+        </a>
+        <a href="memory.html" class="nav-item">
+            <span class="nav-icon">🧠</span>
+            <span class="nav-label">记忆</span>
+        </a>
+    </nav>
+
+    <!-- 球员详情模态框 -->
+    <div class="modal-overlay" id="playerDetailModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="playerDetailName">球员详情</h2>
+                <button class="modal-close" onclick="closePlayerDetail()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="player-detail-header">
+                    <div class="player-detail-avatar" id="playerDetailAvatar">🤖</div>
+                    <div class="player-detail-info">
+                        <h2 id="playerDetailFullName">FB 社群监控 Agent</h2>
+                        <div class="player-detail-role" id="playerDetailRole">中场 · 组织核心</div>
+                        <div style="display: flex; gap: 8px;">
+                            <span class="skill-tag"><span class="icon">⚡</span> FB 社群监控</span>
+                            <span class="skill-tag"><span class="icon">🎯</span> 意图分类</span>
+                            <span class="skill-tag"><span class="icon">📢</span> 自动触达</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="player-detail-stats">
+                    <div class="detail-stat">
+                        <div class="detail-stat-label">本赛季出场</div>
+                        <div class="detail-stat-value" id="playerDetailMatches">1,234</div>
+                    </div>
+                    <div class="detail-stat">
+                        <div class="detail-stat-label">成功率</div>
+                        <div class="detail-stat-value" id="playerDetailSuccess">89%</div>
+                    </div>
+                    <div class="detail-stat">
+                        <div class="detail-stat-label">平均评分</div>
+                        <div class="detail-stat-value" id="playerDetailRating">8.5</div>
+                    </div>
+                    <div class="detail-stat">
+                        <div class="detail-stat-label">市场价值</div>
+                        <div class="detail-stat-value" id="playerDetailValue">$2,458</div>
+                    </div>
+                </div>
+                
+                <div class="player-skills">
+                    <div class="stat-header">
+                        <div class="stat-title">⚡ 技能组合</div>
+                    </div>
+                    <div style="margin-top: 12px;">
+                        <span class="skill-tag"><span class="icon">🔍</span> 社群监听</span>
+                        <span class="skill-tag"><span class="icon">🎯</span> 意图识别</span>
+                        <span class="skill-tag"><span class="icon">💬</span> 多轮对话</span>
+                        <span class="skill-tag"><span class="icon">📊</span> 数据分析</span>
+                        <span class="skill-tag"><span class="icon">🔄</span> 自动跟进</span>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 12px; margin-top: 32px;">
+                    <button class="match-btn match-btn-primary" style="flex: 1;" onclick="showToast('📊 查看球员报告')">
+                        <span>📊</span> 查看报告
+                    </button>
+                    <button class="match-btn match-btn-secondary" style="flex: 1;" onclick="showToast('🔄 调整球员位置')">
+                        <span>🔄</span> 调整位置
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新建球员模态框 (MetaAgent) -->
+    <div class="modal-overlay" id="newPlayerModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">🤖 MetaAgent 球探</h2>
+                <button class="modal-close" onclick="closeNewPlayerModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">🔍</div>
+                    <h3 style="font-size: 18px; margin-bottom: 8px;">用自然语言描述你想要的球员</h3>
+                    <p style="font-size: 13px; color: var(--text-secondary);">MetaAgent 会自动匹配 Skills、配置训练计划</p>
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 24px;">
+                    <textarea class="form-input form-textarea" id="playerDescription" placeholder="例如：我需要一个擅长 TikTok 内容创作的 Agent，能够制作金融教育视频，吸引年轻 OFW 用户..." style="width: 100%; padding: 16px; background: var(--bg-tertiary); border: 1px solid var(--border-light); border-radius: 12px; color: var(--text-primary); font-size: 14px; min-height: 120px; resize: vertical;"></textarea>
+                </div>
+                
+                <div class="metaagent-loading" id="metaagentLoading" style="display: none; text-align: center; padding: 20px;">
+                    <div style="width: 40px; height: 40px; border: 4px solid var(--border-light); border-top-color: var(--primary-light); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px;"></div>
+                    <div style="font-size: 14px; font-weight: 600; margin-bottom: 8px;">🤖 MetaAgent 正在分析...</div>
+                    <div style="font-size: 12px; color: var(--text-tertiary);">匹配技能 · 评估潜力 · 生成训练计划</div>
+                </div>
+                
+                <div style="display: flex; gap: 12px;">
+                    <button class="match-btn match-btn-secondary" style="flex: 1;" onclick="closeNewPlayerModal()">取消</button>
+                    <button class="match-btn match-btn-primary" style="flex: 1;" onclick="createPlayerWithMetaAgent()">
+                        <span>✨</span> 让 MetaAgent 球探
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast 通知 -->
+    <div id="toast" style="position: fixed; bottom: 80px; right: 24px; padding: 16px 20px; background: var(--bg-secondary); border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); border: 1px solid var(--border-light); display: none; align-items: center; gap: 12px; z-index: 2000; animation: slideInRight 0.3s;">
+        <span id="toastIcon" style="font-size: 20px;">✅</span>
+        <span id="toastMessage" style="font-size: 14px; font-weight: 600;">操作成功</span>
+    </div>
+
+    <style>
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-light);
+        }
+    </style>
+
+    <script>
+        // 设置阵型
+        function setFormation(formation) {
+            document.querySelectorAll('.formation-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            showToast(`🔄 阵型已切换为 ${formation}`);
+        }
+
+        // 显示球员详情
+        function showPlayerDetail(playerId) {
+            const players = {
+                1: { name: '风控预审 Agent', role: '守门员 · 最后一道防线', matches: '1,234', success: '92%', rating: '9.2', value: '$5,000', avatar: '🛡️' },
+                2: { name: '反欺诈 Agent', role: '后卫 · 防线核心', matches: '986', success: '95%', rating: '8.8', value: '$3,500', avatar: '🔍' },
+                3: { name: 'FB 社群监控 Agent', role: '中场 · 组织核心', matches: '2,458', success: '89%', rating: '8.5', value: '$2,458', avatar: '📱' },
+                4: { name: 'KOL 协作 Agent', role: '前锋 · 得分手', matches: '156', success: '85%', rating: '8.9', value: '$4,200', avatar: '🌟' },
+            };
+            
+            const player = players[playerId] || players[3];
+            
+            document.getElementById('playerDetailName').textContent = player.name;
+            document.getElementById('playerDetailFullName').textContent = player.name;
+            document.getElementById('playerDetailRole').textContent = player.role;
+            document.getElementById('playerDetailAvatar').textContent = player.avatar;
+            document.getElementById('playerDetailMatches').textContent = player.matches;
+            document.getElementById('playerDetailSuccess').textContent = player.success;
+            document.getElementById('playerDetailRating').textContent = player.rating;
+            document.getElementById('playerDetailValue').textContent = player.value;
+            
+            document.getElementById('playerDetailModal').classList.add('active');
+        }
+
+        // 关闭球员详情
+        function closePlayerDetail() {
+            document.getElementById('playerDetailModal').classList.remove('active');
+        }
+
+        // 显示新建球员模态框
+        function showNewPlayerModal() {
+            document.getElementById('newPlayerModal').classList.add('active');
+        }
+
+        // 关闭新建球员模态框
+        function closeNewPlayerModal() {
+            document.getElementById('newPlayerModal').classList.remove('active');
+        }
+
+        // 用 MetaAgent 创建球员
+        function createPlayerWithMetaAgent() {
+            const description = document.getElementById('playerDescription').value;
+            
+            if (!description) {
+                showToast('❌ 请填写球员描述', '❌');
+                return;
+            }
+            
+            document.getElementById('metaagentLoading').style.display = 'block';
+            
+            setTimeout(() => {
+                document.getElementById('metaagentLoading').style.display = 'none';
+                showToast('✅ 球员签约成功！', '✅');
+                closeNewPlayerModal();
+            }, 2000);
+        }
+
+        // 切换比赛状态
+        let isPlaying = false;
+        function toggleMatch() {
+            isPlaying = !isPlaying;
+            const btn = document.getElementById('matchBtn');
+            if (isPlaying) {
+                btn.innerHTML = '<span>⏸️</span> 暂停比赛';
+                showToast('▶️ 比赛进行中', '▶️');
+                startMatchTimer();
+            } else {
+                btn.innerHTML = '<span>▶️</span> 开始比赛';
+                showToast('⏸️ 比赛已暂停', '⏸️');
+            }
+        }
+
+        // 比赛计时器
+        function startMatchTimer() {
+            let seconds = 32 * 60 + 15;
+            setInterval(() => {
+                if (!isPlaying) return;
+                seconds++;
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                document.getElementById('matchTimer').textContent = 
+                    `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        // 显示 Toast
+        function showToast(message, icon = '✅') {
+            const toast = document.getElementById('toast');
+            const toastIcon = document.getElementById('toastIcon');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastIcon.textContent = icon;
+            toastMessage.textContent = message;
+            toast.style.display = 'flex';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // 关闭模态框
+        document.getElementById('playerDetailModal').addEventListener('click', function(e) {
+            if (e.target === this) closePlayerDetail();
+        });
+        
+        document.getElementById('newPlayerModal').addEventListener('click', function(e) {
+            if (e.target === this) closeNewPlayerModal();
+        });
+
+        // 实时战报自动更新
+        setInterval(() => {
+            if (!isPlaying) return;
+            
+            const events = [
+                { icon: '⚽', text: '射门！KOL 协作 Agent 尝试远射，被对方防守拦截' },
+                { icon: '📢', text: '传球！FB 社群监控 Agent 精准直塞，找到 KOL 协作 Agent' },
+                { icon: '🛡️', text: '防守！反欺诈 Agent 成功拦截可疑申请' },
+                { icon: '💬', text: '控球！意图分类 Agent 控制中场，分析用户需求' }
+            ];
+            
+            const event = events[Math.floor(Math.random() * events.length)];
+            const feed = document.getElementById('liveFeed');
+            const time = document.getElementById('matchTimer').textContent;
+            
+            const item = document.createElement('div');
+            item.className = 'feed-item';
+            item.innerHTML = `
+                <div class="feed-time">${time}'</div>
+                <div class="feed-icon">${event.icon}</div>
+                <div class="feed-content">${event.text}</div>
+            `;
+            
+            feed.insertBefore(item, feed.firstChild);
+            
+            // 保持最多 10 条
+            while (feed.children.length > 10) {
+                feed.removeChild(feed.lastChild);
+            }
+        }, 15000);
+    </script>
+</body>
+</html>
