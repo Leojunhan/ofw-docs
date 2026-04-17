@@ -311,6 +311,74 @@
             overflow-y: auto;
         }
         
+        .drawer-actions {
+            padding: var(--spacing-lg);
+            border-top: 0.5px solid var(--separator);
+            background: var(--secondary-system-background);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+        
+        .action-row {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-subhead);
+            font-weight: var(--weight-medium);
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        
+        .action-btn-primary {
+            background: var(--system-blue);
+            color: white;
+        }
+        
+        .action-btn-primary:hover {
+            background: var(--system-blue-hover);
+        }
+        
+        .action-btn-secondary {
+            background: var(--system-fill);
+            color: var(--secondary-label);
+        }
+        
+        .action-btn-secondary:hover {
+            background: var(--system-blue-light);
+            color: var(--system-blue);
+        }
+        
+        .action-btn-warning {
+            background: var(--system-orange-light);
+            color: var(--system-orange);
+        }
+        
+        .action-btn-warning:hover {
+            background: var(--system-orange);
+            color: white;
+        }
+        
+        .action-btn-danger {
+            background: var(--system-red-light);
+            color: var(--system-red);
+        }
+        
+        .action-btn-danger:hover {
+            background: var(--system-red);
+            color: white;
+        }
+        
         .detail-section {
             margin-bottom: var(--spacing-lg);
         }
@@ -711,6 +779,9 @@
         <div class="drawer-body" id="drawerBody">
             <!-- Dynamic content will be loaded here -->
         </div>
+        <div class="drawer-actions" id="drawerActions">
+            <!-- Dynamic actions will be loaded here -->
+        </div>
     </div>
 
     <!-- Toast Container -->
@@ -939,6 +1010,26 @@
                 </div>
             `;
             
+            // Render actions based on status
+            const isRunning = agent.status === 'running';
+            const isOnline = agent.status === 'online';
+            
+            document.getElementById('drawerActions').innerHTML = `
+                <div class="action-row">
+                    ${isRunning || isOnline ? `
+                        <button class="action-btn action-btn-warning" onclick="restartAgent('${agentId}')">🔄 重启</button>
+                        <button class="action-btn action-btn-secondary" onclick="stopAgent('${agentId}')">⏹ 停止</button>
+                    ` : `
+                        <button class="action-btn action-btn-primary" onclick="startAgent('${agentId}')">▶ 启动</button>
+                    `}
+                    <button class="action-btn action-btn-secondary" onclick="editAgent('${agentId}')">✏ 编辑</button>
+                </div>
+                <div class="action-row">
+                    <button class="action-btn action-btn-secondary" onclick="viewLogs('${agentId}')">📋 查看日志</button>
+                    <button class="action-btn action-btn-danger" onclick="deleteAgent('${agentId}')">🗑 删除</button>
+                </div>
+            `;
+            
             document.getElementById('drawerOverlay').classList.add('active');
             document.getElementById('detailDrawer').classList.add('active');
         }
@@ -997,6 +1088,49 @@
             `;
             container.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
+        }
+        
+        // Agent Actions
+        function startAgent(agentId) {
+            const agent = agentDetails[agentId];
+            if (agent) {
+                agent.status = 'online';
+                showToast(`${agent.name} 已启动`);
+                closeDrawer();
+            }
+        }
+        
+        function stopAgent(agentId) {
+            const agent = agentDetails[agentId];
+            if (agent) {
+                agent.status = 'offline';
+                showToast(`${agent.name} 已停止`);
+                closeDrawer();
+            }
+        }
+        
+        function restartAgent(agentId) {
+            const agent = agentDetails[agentId];
+            if (agent) {
+                showToast(`${agent.name} 正在重启...`);
+            }
+        }
+        
+        function editAgent(agentId) {
+            showToast(`编辑配置开发中...`);
+        }
+        
+        function viewLogs(agentId) {
+            showToast(`跳转到执行记录页面`);
+            // In real app: window.location.href = `executions.html?agent=${agentId}`;
+        }
+        
+        function deleteAgent(agentId) {
+            const agent = agentDetails[agentId];
+            if (agent && confirm(`确定删除 ${agent.name}？此操作不可恢复。`)) {
+                showToast(`${agent.name} 已删除`);
+                closeDrawer();
+            }
         }
     </script>
 </body>
