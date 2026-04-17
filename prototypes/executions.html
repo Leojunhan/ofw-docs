@@ -2688,27 +2688,26 @@
             </div>
         </div>
         <div class="drawer-footer" id="drawerFooter">
-            <!-- 主操作按钮 -->
+            <!-- 主操作按钮 - 高频操作直接展示 -->
             <div class="drawer-footer-primary">
                 <button class="btn btn-secondary" onclick="closeDrawer()">关闭</button>
+                <button class="btn btn-secondary" onclick="viewRelatedAgent(currentExecId)">🤖 Agent</button>
+                <button class="btn btn-secondary" onclick="openFullLog(currentExecId)">📝 日志</button>
                 <button class="btn btn-success" id="retryBtnDrawer" onclick="retryTask(currentExecId)">🔄 重试</button>
                 <button class="btn btn-danger" id="cancelBtnDrawer" onclick="cancelTask(currentExecId)">⏹ 取消</button>
             </div>
-            <!-- 更多操作下拉 -->
+            <!-- 低频操作下拉 -->
             <div class="drawer-footer-secondary">
                 <button class="more-actions-btn" onclick="toggleMoreActions()">
-                    <span>更多</span>
                     <span>⋮</span>
                 </button>
                 <div class="more-actions-menu" id="moreActionsMenu">
-                    <div class="more-actions-item" onclick="viewRelatedAgent(currentExecId)">
-                        <span>🤖</span> 查看关联 Agent
-                    </div>
-                    <div class="more-actions-item" onclick="openFullLog(currentExecId)">
-                        <span>📝</span> 完整日志
-                    </div>
                     <div class="more-actions-item" onclick="copyExecId(currentExecId)">
                         <span>📋</span> 复制 ID
+                    </div>
+                    <div class="more-actions-divider"></div>
+                    <div class="more-actions-item" onclick="downloadLog()">
+                        <span>📥</span> 下载日志
                     </div>
                 </div>
             </div>
@@ -2784,17 +2783,14 @@
         <div class="drawer-footer">
             <div class="drawer-footer-primary">
                 <button class="btn btn-secondary" onclick="closeSkillExecDrawer()">关闭</button>
+                <button class="btn btn-secondary" onclick="openSkillDetail(currentSkillId)">⚡ Skill详情</button>
                 <button class="btn btn-success" onclick="retrySkillExec(currentSkillId)">🔄 重试</button>
             </div>
             <div class="drawer-footer-secondary">
                 <button class="more-actions-btn" onclick="toggleSkillMoreActions()">
-                    <span>更多</span>
                     <span>⋮</span>
                 </button>
                 <div class="more-actions-menu" id="skillMoreActionsMenu">
-                    <div class="more-actions-item" onclick="openSkillDetail(currentSkillId)">
-                        <span>⚡</span> 查看 Skill 详情
-                    </div>
                     <div class="more-actions-item" onclick="copySkillId(currentSkillId)">
                         <span>📋</span> 复制 ID
                     </div>
@@ -2852,18 +2848,16 @@
         <div class="drawer-footer">
             <div class="drawer-footer-primary">
                 <button class="btn btn-secondary" onclick="closeAgentDrawer()">关闭</button>
+                <button class="btn btn-secondary" onclick="goToAgentPage(currentAgentId)">📋 完整详情</button>
+                <button class="btn btn-secondary" onclick="openAgentConfig(currentAgentId)">⚙️ 配置</button>
             </div>
             <div class="drawer-footer-secondary">
                 <button class="more-actions-btn" onclick="toggleAgentMoreActions()">
-                    <span>更多</span>
                     <span>⋮</span>
                 </button>
                 <div class="more-actions-menu" id="agentMoreActionsMenu">
-                    <div class="more-actions-item" onclick="goToAgentPage(currentAgentId)">
-                        <span>📋</span> 完整详情
-                    </div>
-                    <div class="more-actions-item" onclick="openAgentConfig(currentAgentId)">
-                        <span>⚙️</span> 配置
+                    <div class="more-actions-item" onclick="copyAgentId(currentAgentId)">
+                        <span>📋</span> 复制 ID
                     </div>
                 </div>
             </div>
