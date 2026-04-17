@@ -459,8 +459,15 @@
         
         .agent-actions {
             display: flex;
-            gap: 8px;
-            justify-content: space-between;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        
+        /* 按钮组标准化 */
+        .agent-actions .btn-sm {
+            flex: 1;
+            min-width: 70px;
+            justify-content: center;
         }
         
         /* ========== 状态徽章 ========== */
@@ -868,6 +875,12 @@
                             <button class="btn btn-secondary btn-sm">
                                 ⚙️ 配置
                             </button>
+                            <button class="btn btn-secondary btn-sm">
+                                📝 日志
+                            </button>
+                            <button class="btn btn-danger btn-sm">
+                                ⏸️ 暂停
+                            </button>
                         </div>
                     </div>
 
@@ -908,8 +921,14 @@
                             <button class="btn btn-secondary btn-sm">
                                 📋 详情
                             </button>
+                            <button class="btn btn-secondary btn-sm">
+                                ⚙️ 配置
+                            </button>
+                            <button class="btn btn-secondary btn-sm">
+                                📝 日志
+                            </button>
                             <button class="btn btn-danger btn-sm" onclick="stopAgent('AGENT-002')">
-                                ✕ 停止
+                                ⏹️ 停止
                             </button>
                         </div>
                     </div>
@@ -954,6 +973,12 @@
                             <button class="btn btn-secondary btn-sm">
                                 ⚙️ 配置
                             </button>
+                            <button class="btn btn-secondary btn-sm">
+                                📝 日志
+                            </button>
+                            <button class="btn btn-danger btn-sm">
+                                ⏸️ 暂停
+                            </button>
                         </div>
                     </div>
 
@@ -991,11 +1016,17 @@
                             </div>
                         </div>
                         <div class="agent-actions">
-                            <button class="btn btn-success btn-sm" onclick="restartAgent('AGENT-004')">
-                                🔄 重启
+                            <button class="btn btn-secondary btn-sm">
+                                📋 详情
                             </button>
                             <button class="btn btn-secondary btn-sm">
-                                📋 日志
+                                ⚙️ 配置
+                            </button>
+                            <button class="btn btn-secondary btn-sm">
+                                📝 日志
+                            </button>
+                            <button class="btn btn-success btn-sm" onclick="restartAgent('AGENT-004')">
+                                🔄 重启
                             </button>
                         </div>
                     </div>
@@ -1034,11 +1065,17 @@
                             </div>
                         </div>
                         <div class="agent-actions">
-                            <button class="btn btn-success btn-sm" onclick="restartAgent('AGENT-005')">
-                                🔄 重启
+                            <button class="btn btn-secondary btn-sm">
+                                📋 详情
                             </button>
                             <button class="btn btn-secondary btn-sm">
-                                📋 日志
+                                ⚙️ 配置
+                            </button>
+                            <button class="btn btn-secondary btn-sm">
+                                📝 日志
+                            </button>
+                            <button class="btn btn-success btn-sm" onclick="restartAgent('AGENT-005')">
+                                🔄 重启
                             </button>
                         </div>
                     </div>
@@ -1082,6 +1119,12 @@
                             </button>
                             <button class="btn btn-secondary btn-sm">
                                 ⚙️ 配置
+                            </button>
+                            <button class="btn btn-secondary btn-sm">
+                                📝 日志
+                            </button>
+                            <button class="btn btn-danger btn-sm">
+                                ⏸️ 暂停
                             </button>
                         </div>
                     </div>
