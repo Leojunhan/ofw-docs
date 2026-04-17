@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill 管理 - Hunter Agent 管理系统</title>
+    <link rel="stylesheet" href="apple-design-system.css">
+    <style>
+        /* Skills Specific Styles */
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+            gap: var(--spacing-md);
+        }
+        
+        .filter-group {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+        
+        .filter-select {
+            padding: 10px var(--spacing-md);
+            border: 1px solid var(--separator);
+            border-radius: var(--radius-md);
+            background: var(--system-background);
+            font-size: var(--font-subhead);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--system-blue);
+            box-shadow: 0 0 0 4px var(--system-blue-light);
+        }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-md);
+        }
+        
+        .skill-card {
+            background: var(--system-background);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            transition: all 0.2s ease;
+            position: relative;
+            animation: apple-fade-in 0.3s ease;
+        }
+        
+        .skill-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .skill-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .skill-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+        
+        .skill-info {
+            flex: 1;
+        }
+        
+        .skill-name {
+            font-size: var(--font-headline);
+            font-weight: var(--weight-semibold);
+            color: var(--label-color);
+        }
+        
+        .skill-category {
+            font-size: var(--font-caption-1);
+            color: var(--tertiary-label);
+            margin-top: 2px;
+        }
+        
+        .skill-description {
+            font-size: var(--font-footnote);
+            color: var(--secondary-label);
+            line-height: 1.4;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .skill-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+            padding-top: var(--spacing-md);
+            border-top: 0.5px solid var(--separator);
+        }
+        
+        .skill-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .skill-stat-value {
+            font-size: var(--font-headline);
+            font-weight: var(--weight-semibold);
+            color: var(--label-color);
+        }
+        
+        .skill-stat-label {
+            font-size: var(--font-caption-2);
+            color: var(--tertiary-label);
+        }
+        
+        .skill-actions {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+        
+        .skill-actions .btn-sm {
+            flex: 1;
+            justify-content: center;
+        }
+        
+        .skill-dependencies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-xs);
+            margin-top: var(--spacing-md);
+        }
+        
+        .dependency-tag {
+            padding: 4px 8px;
+            background: var(--system-fill);
+            border-radius: var(--radius-xs);
+            font-size: var(--font-caption-2);
+            color: var(--secondary-label);
+        }
+        
+        .skill-enabled {
+            border-left: 3px solid var(--system-green);
+        }
+        
+        .skill-disabled {
+            border-left: 3px solid var(--system-gray);
+        }
+        
+        .skill-warning {
+            border-left: 3px solid var(--system-orange);
+        }
+        
+        .skill-error {
+            border-left: 3px solid var(--system-red);
+        }
+        
+        /* Skill Detail Panel */
+        .skill-detail-panel {
+            background: var(--system-background);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .skill-detail-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .skill-detail-title {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .skill-detail-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+        
+        .skill-detail-name {
+            font-size: var(--font-title-3);
+            font-weight: var(--weight-semibold);
+        }
+        
+        .skill-detail-id {
+            font-size: var(--font-caption-1);
+            color: var(--tertiary-label);
+        }
+        
+        .skill-detail-section {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .skill-detail-section-title {
+            font-size: var(--font-footnote);
+            font-weight: var(--weight-semibold);
+            color: var(--secondary-label);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .skill-config-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-md);
+            background: var(--secondary-system-background);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .skill-config-label {
+            font-size: var(--font-subhead);
+            color: var(--label-color);
+        }
+        
+        .skill-config-value {
+            font-size: var(--font-subhead);
+            font-weight: var(--weight-medium);
+            color: var(--secondary-label);
+        }
+        
+        .skill-toggle {
+            width: 48px;
+            height: 28px;
+            background: var(--system-fill);
+            border-radius: var(--radius-full);
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        
+        .skill-toggle.active {
+            background: var(--system-green);
+        }
+        
+        .skill-toggle::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.2s ease;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .skill-toggle.active::after {
+            transform: translateX(20px);
+        }
+        
+        @media (max-width: 1200px) {
+            .skills-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        
+        @media (max-width: 900px) {
+            .skills-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        
+        @media (max-width: 600px) {
+            .skills-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-group">
+                    <div class="logo-icon">H</div>
+                    <div class="logo-text">
+                        <div class="logo">Hunter</div>
+                    </div>
+                </div>
+                <button class="sidebar-toggle" onclick="toggleSidebar()">◀</button>
+            </div>
+            <nav class="nav-section">
+                <a href="dashboard.html" class="nav-item">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+                <a href="agents.html" class="nav-item">
+                    <span class="nav-icon">🤖</span>
+                    <span class="nav-label">Agent 管理</span>
+                </a>
+                <a href="skills.html" class="nav-item active">
+                    <span class="nav-icon">⚡</span>
+                    <span class="nav-label">Skill 管理</span>
+                </a>
+                <a href="executions.html" class="nav-item">
+                    <span class="nav-icon">📝</span>
+                    <span class="nav-label">执行记录</span>
+                </a>
+                <a href="settings.html" class="nav-item">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-label">系统设置</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1 class="page-title">⚡ Skill 管理</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <div class="user-avatar">D</div>
+                    <div class="user-details">
+                        <div class="user-name">Diwei</div>
+                        <div class="user-role">管理员</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon primary">⚡</div>
+                    <div class="stat-content">
+                        <div class="stat-label">总 Skills</div>
+                        <div class="stat-value">18</div>
+                        <div class="stat-meta">
+                            <span class="stat-change positive">▲ +3 本周新增</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon success">✓</div>
+                    <div class="stat-content">
+                        <div class="stat-label">已启用</div>
+                        <div class="stat-value">15</div>
+                        <div class="stat-meta">
+                            <span class="stat-change">83% 启用率</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon info">🔗</div>
+                    <div class="stat-content">
+                        <div class="stat-label">绑定 Agents</div>
+                        <div class="stat-value">42</div>
+                        <div class="stat-meta">
+                            <span class="stat-change">平均 2.3个/Agent</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon warning">📥</div>
+                    <div class="stat-content">
+                        <div class="stat-label">总执行次数</div>
+                        <div class="stat-value">892</div>
+                        <div class="stat-meta">
+                            <span class="stat-change positive">本周 +156</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="toolbar">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="搜索 Skill 名称..." id="searchInput">
+                </div>
+                <div class="filter-group">
+                    <select class="filter-select" id="categoryFilter">
+                        <option value="all">全部类别</option>
+                        <option value="file">📄 文件处理</option>
+                        <option value="browser">🌐 浏览器</option>
+                        <option value="communication">📧 通讯</option>
+                        <option value="automation">🤖 自动化</option>
+                    </select>
+                    <select class="filter-select" id="statusFilter">
+                        <option value="all">全部状态</option>
+                        <option value="enabled">✓ 已启用</option>
+                        <option value="disabled">✕ 已禁用</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="openCreateDrawer()">
+                        <span>+</span> 创建新 Skill
+                    </button>
+                </div>
+            </div>
+
+            <!-- Skills Grid -->
+            <div class="skills-grid" id="skillsGrid">
+                <!-- Skill Card 1 -->
+                <div class="skill-card skill-enabled">
+                    <div class="skill-header">
+                        <div class="skill-icon" style="background: var(--system-blue-light); color: var(--system-blue);">📄</div>
+                        <div class="skill-info">
+                            <div class="skill-name">file_reader</div>
+                            <div class="skill-category">文件处理</div>
+                        </div>
+                    </div>
+                    <div class="skill-description">读取和总结文本文件内容，支持多种文本格式</div>
+                    <div class="skill-meta">
+                        <div class="skill-stat">
+                            <div class="skill-stat-value">156</div>
+                            <div class="skill-stat-label">执行次数</div>
+                        </div>
+                        <div class="skill-stat">
+                            <div class="skill-stat-value" style="color: var(--system-green);">98.5%</div>
+                            <div class="skill-stat-label">成功率</div>
+                        </div>
+                    </div>
+                    <div class="skill-dependencies">
+                        <span class="dependency-tag">依赖: 无</span>
+                    </div>
+                    <div class="skill-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="openDetailDrawer('file_reader')">详情</button>
+                        <button class="btn btn-secondary btn-sm" onclick="openConfigDrawer('file_reader')">配置</button>
+                    </div>
+                </div>
+
+                <!-- Skill Card 2 -->
+                <div class="skill-card skill-enabled">
+                    <div class="skill-header">
+                        <div class="skill-icon" style="background: var(--system-purple-light); color: var(--system-purple);">📑</div>
+                        <div class="skill-info">
+                            <div class="skill-name">pdf</div>
+                            <div class="skill-category">文件处理</div>
+                        </div>
+                    </div>
+                    <div class="skill-description">PDF 文件读取、合并、拆分、水印添加等功能</div>
+                    <div class="skill-meta">
+                        <div class="skill-stat">
+                            <div class="skill-stat-value">89</div>
+                            <div class="skill-stat-label">执行次数</div>
+                        </div>
+                        <div class="skill-stat">
+                            <div class="skill-stat-value" style="color: var(--system-green);">95.2%</div>
+                            <div class="skill-stat-label">成功率</div>
+                        </div>
+                    </div>
+                    <div class="skill-dependencies">
+                        <span class="dependency-tag">依赖: file_reader</span>
+                    </div>
+                    <div class="skill-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="openDetailDrawer('pdf')">详情</button>
+                        <button class="btn btn-secondary btn-sm" onclick="openConfigDrawer('pdf')">配置</button>
+                    </div>
+                </div>
+
+                <!-- Skill Card 3 -->
+                <div class="skill-card skill-enabled">
+                    <div class="skill-header">
+                        <div class="skill-icon" style="background: var(--system-teal-light); color: var(--system-teal);">📝</div>
+                        <div class="skill-info">
+                            <div class="skill-name">docx</div>
+                            <div class="skill-category">文件处理</div>
+                        </div>
+                    </div>
+                    <div class="skill-description">Word 文档创建、编辑、格式转换</div>
+                    <div class="skill-meta">
+                        <div class="skill-stat">
+                            <div class="skill-stat-value">67</div>
+                            <div class="skill-stat-label">执行次数</div>
+                        </div>
+                        <div class="skill-stat">
+                            <div class="skill-stat-value" style="color: var(--system-green);">97.3%</div>
+                            <div class="skill-stat-label">成功率</div>
+                        </div>
+                    </div>
+                    <div class="skill-dependencies">
+                        <span class="dependency-tag">依赖: file_reader</span>
+                    </div>
+                    <div class="skill-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="openDetailDrawer('docx')">详情</button>
+                        <button class="btn btn-secondary btn-sm" onclick="openConfigDrawer('docx')">配置</button>
+                    </div>
+                </div>
+
+                <!-- Skill Card 4 -->
+                <div class="skill-card skill-enabled">
+                    <div class="skill-header">
+                        <div class="skill-icon" style="background: var(--system-green-light); color: var(--system-green);">📊</div>
+                        <div class="skill-info">
+                            <div class="skill-name">xlsx</div>
+                            <div class="skill-category">文件处理</div>
+                        </div>
+                    </div>
+                    <div class="skill-description">Excel 表格读取、编辑、数据分析</div>
+                    <div class="skill-meta">
+                        <div class="skill-stat">
+                            <div class="skill-stat-value">45</div>
+                            <div class="skill-stat-label">执行次数</div>
+                        </div>
+                        <div class="skill-stat">
+                            <div class="skill-stat-value" style="color: var(--system-green);">92.4%</div>
+                            <div class="skill-stat-label">成功率</div>
+                        </div>
+                    </div>
+                    <div class="skill-dependencies">
+                        <span class="dependency-tag">依赖: file_reader</span>
+                    </div>
+                    <div class="skill-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="openDetailDrawer('xlsx')">详情</button>
+                        <button class="btn btn-secondary btn-sm" onclick="openConfigDrawer('xlsx')">配置</button>
+                    </div>
+                </div>
+
+                <!-- Skill Card 5 -->
+                <div class="skill-card skill-enabled">
+                    <div class="skill-header">
+                        <div class="skill-icon" style="background: var(--system-orange-light); color: var(--system-orange);">🌐</div>
+                        <div class="skill-info">
+                            <div class="skill-name">browser_visible</div>
+                            <div class="skill-category">浏览器</div>
+                        </div>
+                    </div>
+                    <div class="skill-description">可视浏览器操作，适合演示和调试场景</div>
+                    <div class="skill-meta">
+                        <div class="skill-stat">
+                            <div class="skill-stat-value">234</div>
+                            <div class="skill-stat-label">执行次数</div>
+                        </div>
+                        <div class="skill-stat">
+                            <div class="skill-stat-value" style="color: var(--system-green);">89.7%</div>
+                            <div class="skill-stat-label">成功率</div>
+                        </div>
+                    </div>
+                    <div class="skill-dependencies">
+                        <span class="dependency-tag">依赖: 无</span>
+                    </div>
+                    <div class="skill-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="openDetailDrawer('browser_visible')">详情</button>
+                        <button class="btn btn-secondary btn-sm" onclick="openConfigDrawer('browser_visible')">配置</button>
+                    </div>
+                </div>
+
+                <!-- Skill Card 6 -->
+                <div class="skill-card skill-enabled">
+                    <div class="skill-header">
+                        <div class="skill-icon" style="background: var(--system-pink-light); color: var(--system-pink);">📧</div>
+                        <div class="skill-info">
+                            <div class="skill-name">himalaya</div>
+                            <div class="skill-category">通讯</div>
+                        </div>
+                    </div>
+                    <div class="skill-description">邮箱管理，支持 IMAP/SMTP 操作</div>
+                    <div class="skill-meta">
+                        <div class="skill-stat">
+                            <div class="skill-stat-value">78</div>
+                            <div class="skill-stat-label">执行次数</div>
+                        </div>
+                        <div class="skill-stat">
+                            <div class="skill-stat-value" style="color: var(--system-green);">94.6%</div>
+                            <div class="skill-stat-label">成功率</div>
+                        </div>
+                    </div>
+                    <div class="skill-dependencies">
+                        <span class="dependency-tag">依赖: 无</span>
+                    </div>
+                    <div class="skill-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="openDetailDrawer('himalaya')">详情</button>
+                        <button class="btn btn-secondary btn-sm" onclick="openConfigDrawer('himalaya')">配置</button>
+                    </div>
+                </div>
+
+                <!-- Skill Card 7 -->
+                <div class="skill-card skill-warning">
+                    <div class="skill-header">
+                        <div class="skill-icon" style="background: var(--system-gray-light); color: var(--system-gray);">🤖</div>
+                        <div class="skill-info">
+                            <div class="skill-name">cron</div>
+                            <div class="skill-category">自动化</div>
+                        </div>
+                    </div>
+                    <div class="skill-description">定时任务管理，创建、查询、暂停任务</div>
+                    <div class="skill-meta">
+                        <div class="skill-stat">
+                            <div class="skill-stat-value">12</div>
+                            <div class="skill-stat-label">执行次数</div>
+                        </div>
+                        <div class="skill-stat">
+                            <div class="skill-stat-value" style="color: var(--system-orange);">83.3%</div>
+                            <div class="skill-stat-label">成功率</div>
+                        </div>
+                    </div>
+                    <div class="skill-dependencies">
+                        <span class="dependency-tag">依赖: 无</span>
+                        <span class="dependency-tag" style="background: rgba(255, 149, 0, 0.12); color: var(--system-orange);">⚠ 需检查</span>
+                    </div>
+                    <div class="skill-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="openDetailDrawer('cron')">详情</button>
+                        <button class="btn btn-secondary btn-sm" onclick="openConfigDrawer('cron')">配置</button>
+                    </div>
+                </div>
+
+                <!-- Skill Card 8 -->
+                <div class="skill-card skill-disabled">
+                    <div class="skill-header">
+                        <div class="skill-icon" style="background: var(--system-gray-light); color: var(--system-gray);">📈</div>
+                        <div class="skill-info">
+                            <div class="skill-name">market-research</div>
+                            <div class="skill-category">自动化</div>
+                        </div>
+                    </div>
+                    <div class="skill-description">市场调研分析，输出行业报告</div>
+                    <div class="skill-meta">
+                        <div class="skill-stat">
+                            <div class="skill-stat-value">0</div>
+                            <div class="skill-stat-label">执行次数</div>
+                        </div>
+                        <div class="skill-stat">
+                            <div class="skill-stat-value" style="color: var(--system-gray);">-</div>
+                            <div class="skill-stat-label">成功率</div>
+                        </div>
+                    </div>
+                    <div class="skill-dependencies">
+                        <span class="dependency-tag">依赖: browser_visible</span>
+                        <span class="dependency-tag" style="background: var(--system-fill); color: var(--tertiary-label);">已禁用</span>
+                    </div>
+                    <div class="skill-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="openDetailDrawer('market-research')">详情</button>
+                        <button class="btn btn-success btn-sm">启用</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Create Skill Drawer -->
+    <div class="drawer-overlay" id="createOverlay"></div>
+    <div class="drawer" id="createDrawer">
+        <div class="drawer-header">
+            <h2 class="drawer-title">创建新 Skill</h2>
+            <button class="drawer-close" onclick="closeCreateDrawer()">✕</button>
+        </div>
+        <div class="drawer-body">
+            <div class="form-group">
+                <label class="form-label">Skill 名称</label>
+                <input type="text" class="form-input" placeholder="例如：trend-tracking" id="skillName">
+                <p class="form-hint">使用英文命名，便于引用</p>
+            </div>
+            <div class="form-group">
+                <label class="form-label">类别</label>
+                <select class="form-select" id="skillCategory">
+                    <option value="file">📄 文件处理</option>
+                    <option value="browser">🌐 浏览器</option>
+                    <option value="communication">📧 通讯</option>
+                    <option value="automation">🤖 自动化</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">描述</label>
+                <textarea class="form-textarea" placeholder="描述 Skill 的主要功能..." id="skillDesc"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">依赖 Skills</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <label class="skill-checkbox" style="padding: 8px 12px; border: 1px solid var(--separator); border-radius: 8px; cursor: pointer;">
+                        <input type="checkbox" style="margin-right: 6px;"> file_reader
+                    </label>
+                    <label class="skill-checkbox" style="padding: 8px 12px; border: 1px solid var(--separator); border-radius: 8px; cursor: pointer;">
+                        <input type="checkbox" style="margin-right: 6px;"> browser_visible
+                    </label>
+                    <label class="skill-checkbox" style="padding: 8px 12px; border: 1px solid var(--separator); border-radius: 8px; cursor: pointer;">
+                        <input type="checkbox" style="margin-right: 6px;"> pdf
+                    </label>
+                </div>
+                <p class="form-hint">选择执行此 Skill 所需的其他 Skill</p>
+            </div>
+            <div class="form-group">
+                <label class="form-label">是否启用</label>
+                <div class="skill-toggle active" onclick="this.classList.toggle('active')"></div>
+            </div>
+        </div>
+        <div class="drawer-footer">
+            <button class="btn btn-secondary" onclick="closeCreateDrawer()">取消</button>
+            <button class="btn btn-primary" onclick="createSkill()">创建 Skill</button>
+        </div>
+    </div>
+
+    <!-- Skill Detail Drawer -->
+    <div class="drawer-overlay" id="detailOverlay"></div>
+    <div class="drawer" id="detailDrawer">
+        <div class="drawer-header">
+            <h2 class="drawer-title">Skill 详情</h2>
+            <button class="drawer-close" onclick="closeDetailDrawer()">✕</button>
+        </div>
+        <div class="drawer-body">
+            <div class="drawer-section">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="skill-icon" style="width: 56px; height: 56px; background: var(--system-blue-light); color: var(--system-blue); font-size: 32px;">📄</div>
+                    <div>
+                        <div style="font-size: 17px; font-weight: 600;">file_reader</div>
+                        <div style="font-size: 12px; color: var(--tertiary-label);">文件处理类</div>
+                    </div>
+                    <span class="badge success" style="margin-left: auto;">已启用</span>
+                </div>
+            </div>
+            <div class="drawer-section">
+                <div class="drawer-section-title">描述</div>
+                <p style="font-size: 15px; color: var(--secondary-label);">读取和总结文本文件内容，支持多种文本格式。优先使用 read_file 工具处理文本格式。</p>
+            </div>
+            <div class="drawer-section">
+                <div class="drawer-section-title">绑定 Agents</div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <span class="badge primary">SEO内容Agent</span>
+                    <span class="badge primary">风控预审Agent</span>
+                    <span class="badge primary">贷后管理Agent</span>
+                </div>
+            </div>
+            <div class="drawer-section">
+                <div class="drawer-section-title">执行统计</div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                    <div style="background: var(--secondary-system-background); padding: 12px; border-radius: 10px;">
+                        <div style="font-size: 11px; color: var(--tertiary-label);">执行次数</div>
+                        <div style="font-size: 20px; font-weight: 600; margin-top: 4px;">156</div>
+                    </div>
+                    <div style="background: var(--secondary-system-background); padding: 12px; border-radius: 10px;">
+                        <div style="font-size: 11px; color: var(--tertiary-label);">成功率</div>
+                        <div style="font-size: 20px; font-weight: 600; margin-top: 4px; color: var(--system-green);">98.5%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="drawer-footer">
+            <button class="btn btn-secondary" onclick="closeDetailDrawer()">关闭</button>
+            <button class="btn btn-secondary" onclick="openConfigDrawer('file_reader')">编辑配置</button>
+        </div>
+    </div>
+
+    <!-- Skill Config Drawer -->
+    <div class="drawer-overlay" id="configOverlay"></div>
+    <div class="drawer" id="configDrawer">
+        <div class="drawer-header">
+            <h2 class="drawer-title">Skill 配置</h2>
+            <button class="drawer-close" onclick="closeConfigDrawer()">✕</button>
+        </div>
+        <div class="drawer-body">
+            <div class="form-group">
+                <div class="skill-config-item">
+                    <span class="skill-config-label">启用状态</span>
+                    <div class="skill-toggle active" onclick="this.classList.toggle('active')"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">超时时间（秒）</label>
+                <input type="number" class="form-input" value="60" id="skillTimeout">
+            </div>
+            <div class="form-group">
+                <label class="form-label">最大重试次数</label>
+                <input type="number" class="form-input" value="3" id="skillRetries">
+            </div>
+            <div class="form-group">
+                <label class="form-label">日志级别</label>
+                <select class="form-select" id="skillLogLevel">
+                    <option value="debug">Debug - 详细日志</option>
+                    <option value="info" selected>Info - 标准日志</option>
+                    <option value="warning">Warning - 警告日志</option>
+                    <option value="error">Error - 错误日志</option>
+                </select>
+            </div>
+        </div>
+        <div class="drawer-footer">
+            <button class="btn btn-secondary" onclick="closeConfigDrawer()">取消</button>
+            <button class="btn btn-primary" onclick="saveConfig()">保存配置</button>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // Sidebar Toggle
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        }
+
+        // Drawer Functions
+        function openCreateDrawer() {
+            document.getElementById('createOverlay').classList.add('active');
+            document.getElementById('createDrawer').classList.add('active');
+        }
+        
+        function closeCreateDrawer() {
+            document.getElementById('createOverlay').classList.remove('active');
+            document.getElementById('createDrawer').classList.remove('active');
+        }
+        
+        function openDetailDrawer(skillId) {
+            document.getElementById('detailOverlay').classList.add('active');
+            document.getElementById('detailDrawer').classList.add('active');
+        }
+        
+        function closeDetailDrawer() {
+            document.getElementById('detailOverlay').classList.remove('active');
+            document.getElementById('detailDrawer').classList.remove('active');
+        }
+        
+        function openConfigDrawer(skillId) {
+            closeDetailDrawer();
+            document.getElementById('configOverlay').classList.add('active');
+            document.getElementById('configDrawer').classList.add('active');
+        }
+        
+        function closeConfigDrawer() {
+            document.getElementById('configOverlay').classList.remove('active');
+            document.getElementById('configDrawer').classList.remove('active');
+        }
+
+        // Toast
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <span class="toast-icon">${type === 'success' ? '✓' : '✕'}</span>
+                <span class="toast-message">${message}</span>
+                <span class="toast-close" onclick="this.parentElement.remove()">✕</span>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Create Skill
+        function createSkill() {
+            const name = document.getElementById('skillName').value;
+            if (!name) {
+                showToast('请填写 Skill 名称', 'error');
+                return;
+            }
+            showToast('Skill 创建成功！');
+            closeCreateDrawer();
+        }
+
+        // Save Config
+        function saveConfig() {
+            showToast('配置已保存！');
+            closeConfigDrawer();
+        }
+
+        // Search Filter
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const keyword = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.skill-card');
+            cards.forEach(card => {
+                const name = card.querySelector('.skill-name').textContent.toLowerCase();
+                card.style.display = name.includes(keyword) ? 'block' : 'none';
+            });
+        });
+
+        // Category Filter
+        document.getElementById('categoryFilter').addEventListener('change', function(e) {
+            const category = e.target.value;
+            const cards = document.querySelectorAll('.skill-card');
+            cards.forEach(card => {
+                if (category === 'all') {
+                    card.style.display = 'block';
+                } else {
+                    const cardCategory = card.querySelector('.skill-category').textContent;
+                    const categoryMap = {
+                        'file': '文件处理',
+                        'browser': '浏览器',
+                        'communication': '通讯',
+                        'automation': '自动化'
+                    };
+                    card.style.display = cardCategory === categoryMap[category] ? 'block' : 'none';
+                }
+            });
+        });
+
+        // Status Filter
+        document.getElementById('statusFilter').addEventListener('change', function(e) {
+            const status = e.target.value;
+            const cards = document.querySelectorAll('.skill-card');
+            cards.forEach(card => {
+                if (status === 'all') {
+                    card.style.display = 'block';
+                } else if (status === 'enabled') {
+                    card.style.display = card.classList.contains('skill-enabled') ? 'block' : 'none';
+                } else if (status === 'disabled') {
+                    card.style.display = card.classList.contains('skill-disabled') ? 'block' : 'none';
+                }
+            });
+        });
+
+        // Close drawer on overlay click
+        document.querySelectorAll('.drawer-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function() {
+                this.classList.remove('active');
+                const drawerId = this.id.replace('Overlay', 'Drawer');
+                document.getElementById(drawerId).classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>
