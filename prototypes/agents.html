@@ -742,6 +742,51 @@
             .agents-grid { grid-template-columns: 1fr; }
             .drawer { width: 100%; }
         }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+            display: block;
+        }
+        
+        .form-input, .form-textarea, select.form-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--text-primary);
+            background: white;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+        
+        .form-input:focus, .form-textarea:focus, select.form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        select.form-input {
+            cursor: pointer;
+        }
+        
+        .skill-checkbox-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
     </style>
 </head>
 <body>
@@ -872,13 +917,13 @@
                             <button class="btn btn-secondary btn-sm" onclick="openDetailDrawer('AGENT-001')">
                                 📋 详情
                             </button>
-                            <button class="btn btn-secondary btn-sm">
+                            <button class="btn btn-secondary btn-sm" onclick="openConfigDrawer('AGENT-001')">
                                 ⚙️ 配置
                             </button>
-                            <button class="btn btn-secondary btn-sm">
+                            <button class="btn btn-secondary btn-sm" onclick="openLogDrawer('AGENT-001')">
                                 📝 日志
                             </button>
-                            <button class="btn btn-danger btn-sm">
+                            <button class="btn btn-danger btn-sm" onclick="pauseAgent('AGENT-001')">
                                 ⏸️ 暂停
                             </button>
                         </div>
@@ -918,13 +963,13 @@
                             </div>
                         </div>
                         <div class="agent-actions">
-                            <button class="btn btn-secondary btn-sm">
+                            <button class="btn btn-secondary btn-sm" onclick="openDetailDrawer('AGENT-002')">
                                 📋 详情
                             </button>
-                            <button class="btn btn-secondary btn-sm">
+                            <button class="btn btn-secondary btn-sm" onclick="openConfigDrawer('AGENT-002')">
                                 ⚙️ 配置
                             </button>
-                            <button class="btn btn-secondary btn-sm">
+                            <button class="btn btn-secondary btn-sm" onclick="openLogDrawer('AGENT-002')">
                                 📝 日志
                             </button>
                             <button class="btn btn-danger btn-sm" onclick="stopAgent('AGENT-002')">
@@ -967,16 +1012,16 @@
                             </div>
                         </div>
                         <div class="agent-actions">
-                            <button class="btn btn-secondary btn-sm">
+                            <button class="btn btn-secondary btn-sm" onclick="openDetailDrawer('AGENT-003')">
                                 📋 详情
                             </button>
-                            <button class="btn btn-secondary btn-sm">
+                            <button class="btn btn-secondary btn-sm" onclick="openConfigDrawer('AGENT-003')">
                                 ⚙️ 配置
                             </button>
-                            <button class="btn btn-secondary btn-sm">
+                            <button class="btn btn-secondary btn-sm" onclick="openLogDrawer('AGENT-003')">
                                 📝 日志
                             </button>
-                            <button class="btn btn-danger btn-sm">
+                            <button class="btn btn-danger btn-sm" onclick="pauseAgent('AGENT-003')">
                                 ⏸️ 暂停
                             </button>
                         </div>
@@ -1016,13 +1061,13 @@
                             </div>
                         </div>
                         <div class="agent-actions">
-                            <button class="btn btn-secondary btn-sm">
+                            <button class="btn btn-secondary btn-sm" onclick="openDetailDrawer('AGENT-004')">
                                 📋 详情
                             </button>
-                            <button class="btn btn-secondary btn-sm">
+                            <button class="btn btn-secondary btn-sm" onclick="openConfigDrawer('AGENT-004')">
                                 ⚙️ 配置
                             </button>
-                            <button class="btn btn-secondary btn-sm">
+                            <button class="btn btn-secondary btn-sm" onclick="openLogDrawer('AGENT-004')">
                                 📝 日志
                             </button>
                             <button class="btn btn-success btn-sm" onclick="restartAgent('AGENT-004')">
@@ -1065,13 +1110,13 @@
                             </div>
                         </div>
                         <div class="agent-actions">
-                            <button class="btn btn-secondary btn-sm">
+                            <button class="btn btn-secondary btn-sm" onclick="openDetailDrawer('AGENT-005')">
                                 📋 详情
                             </button>
-                            <button class="btn btn-secondary btn-sm">
+                            <button class="btn btn-secondary btn-sm" onclick="openConfigDrawer('AGENT-005')">
                                 ⚙️ 配置
                             </button>
-                            <button class="btn btn-secondary btn-sm">
+                            <button class="btn btn-secondary btn-sm" onclick="openLogDrawer('AGENT-005')">
                                 📝 日志
                             </button>
                             <button class="btn btn-success btn-sm" onclick="restartAgent('AGENT-005')">
@@ -1114,16 +1159,16 @@
                             </div>
                         </div>
                         <div class="agent-actions">
-                            <button class="btn btn-secondary btn-sm">
+                            <button class="btn btn-secondary btn-sm" onclick="openDetailDrawer('AGENT-006')">
                                 📋 详情
                             </button>
-                            <button class="btn btn-secondary btn-sm">
+                            <button class="btn btn-secondary btn-sm" onclick="openConfigDrawer('AGENT-006')">
                                 ⚙️ 配置
                             </button>
-                            <button class="btn btn-secondary btn-sm">
+                            <button class="btn btn-secondary btn-sm" onclick="openLogDrawer('AGENT-006')">
                                 📝 日志
                             </button>
-                            <button class="btn btn-danger btn-sm">
+                            <button class="btn btn-danger btn-sm" onclick="pauseAgent('AGENT-006')">
                                 ⏸️ 暂停
                             </button>
                         </div>
@@ -1217,7 +1262,7 @@
                 <div class="agent-meta">
                     <div class="meta-item">
                         <div class="meta-label">Agent ID</div>
-                        <div class="meta-value">AGENT-001</div>
+                        <div class="meta-value" id="detailAgentId">AGENT-001</div>
                     </div>
                     <div class="meta-item">
                         <div class="meta-label">创建时间</div>
@@ -1225,7 +1270,7 @@
                     </div>
                     <div class="meta-item">
                         <div class="meta-label">状态</div>
-                        <div class="meta-value" style="color: var(--success);">✓ Online</div>
+                        <div class="meta-value" id="detailStatus" style="color: var(--success);">✓ Online</div>
                     </div>
                     <div class="meta-item">
                         <div class="meta-label">运行时长</div>
@@ -1256,11 +1301,184 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="drawer-section">
+                <div class="drawer-section-title">最近 5 次执行</div>
+                <div style="font-size: 13px;">
+                    <div style="padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between;">
+                        <span style="font-family: monospace; color: var(--text-secondary);">EXEC-20260416-048</span>
+                        <span style="color: var(--success);">✓ 成功</span>
+                        <span>2.3s</span>
+                        <span>2026-04-16 10:23</span>
+                    </div>
+                    <div style="padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between;">
+                        <span style="font-family: monospace; color: var(--text-secondary);">EXEC-20260416-047</span>
+                        <span style="color: var(--success);">✓ 成功</span>
+                        <span>1.8s</span>
+                        <span>2026-04-16 09:45</span>
+                    </div>
+                    <div style="padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between;">
+                        <span style="font-family: monospace; color: var(--text-secondary);">EXEC-20260416-046</span>
+                        <span style="color: var(--success);">✓ 成功</span>
+                        <span>2.1s</span>
+                        <span>2026-04-16 09:00</span>
+                    </div>
+                    <div style="padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between;">
+                        <span style="font-family: monospace; color: var(--text-secondary);">EXEC-20260416-045</span>
+                        <span style="color: var(--danger);">✕ 失败</span>
+                        <span>5.2s</span>
+                        <span>2026-04-16 08:30</span>
+                    </div>
+                    <div style="padding: 8px 0; display: flex; justify-content: space-between;">
+                        <span style="font-family: monospace; color: var(--text-secondary);">EXEC-20260416-044</span>
+                        <span style="color: var(--success);">✓ 成功</span>
+                        <span>1.5s</span>
+                        <span>2026-04-16 08:00</span>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="drawer-footer">
             <button class="btn btn-secondary" onclick="closeDetailDrawer()">关闭</button>
-            <button class="btn btn-secondary">⚙️ 编辑配置</button>
-            <button class="btn btn-danger">🗑️ 删除</button>
+            <button class="btn btn-secondary" onclick="openConfigDrawer(currentAgentId)">⚙️ 编辑配置</button>
+            <button class="btn btn-secondary" onclick="openLogDrawer(currentAgentId)">📝 查看日志</button>
+            <button class="btn btn-danger" onclick="deleteAgent(currentAgentId)">🗑️ 删除</button>
+        </div>
+    </div>
+
+    <!-- Config Drawer -->
+    <div class="drawer-overlay" id="configDrawerOverlay" onclick="closeConfigDrawer()"></div>
+    <div class="drawer" id="configDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title">⚙️ Agent 配置</span>
+            <button class="drawer-close" onclick="closeConfigDrawer()">✕</button>
+        </div>
+        <div class="drawer-body">
+            <div class="form-group">
+                <label class="form-label">Agent 名称</label>
+                <input type="text" class="form-input" id="configAgentName" value="获客流程 Agent">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Agent ID</label>
+                <input type="text" class="form-input" id="configAgentId" value="AGENT-001" disabled style="background: var(--bg-page);">
+            </div>
+            <div class="form-group">
+                <label class="form-label">触发方式</label>
+                <select class="form-input" id="configTriggerType">
+                    <option value="schedule">定时触发</option>
+                    <option value="event">事件触发</option>
+                    <option value="manual">手动触发</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">执行间隔</label>
+                <input type="text" class="form-input" id="configInterval" value="每 30 分钟">
+            </div>
+            <div class="form-group">
+                <label class="form-label">最大重试次数</label>
+                <input type="number" class="form-input" id="configMaxRetry" value="3">
+            </div>
+            <div class="form-group">
+                <label class="form-label">超时时间（秒）</label>
+                <input type="number" class="form-input" id="configTimeout" value="90">
+            </div>
+            <div class="form-group">
+                <label class="form-label">绑定 Skills</label>
+                <div class="skill-checkbox-group" id="configSkillGroup">
+                    <div class="skill-checkbox selected" onclick="toggleSkill(this)">FB 社群监控</div>
+                    <div class="skill-checkbox selected" onclick="toggleSkill(this)">意图识别</div>
+                    <div class="skill-checkbox" onclick="toggleSkill(this)">私信触达</div>
+                    <div class="skill-checkbox" onclick="toggleSkill(this)">通知推送</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">备注</label>
+                <textarea class="form-textarea" id="configNote" rows="3" placeholder="添加备注信息..."></textarea>
+            </div>
+        </div>
+        <div class="drawer-footer">
+            <button class="btn btn-secondary" onclick="closeConfigDrawer()">取消</button>
+            <button class="btn btn-primary" onclick="saveConfig()">✓ 保存配置</button>
+        </div>
+    </div>
+
+    <!-- Log Drawer -->
+    <div class="drawer-overlay" id="logDrawerOverlay" onclick="closeLogDrawer()"></div>
+    <div class="drawer" id="logDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title">📝 Agent 运行日志</span>
+            <button class="drawer-close" onclick="closeLogDrawer()">✕</button>
+        </div>
+        <div class="drawer-body">
+            <div class="drawer-section">
+                <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                    <select class="form-input" style="width: 150px;" id="logLevelFilter">
+                        <option value="all">全部级别</option>
+                        <option value="info">INFO</option>
+                        <option value="error">ERROR</option>
+                        <option value="success">SUCCESS</option>
+                    </select>
+                    <button class="btn btn-secondary" onclick="refreshLogs()">🔄 刷新</button>
+                    <button class="btn btn-secondary" onclick="downloadLogs()">📥 下载</button>
+                </div>
+            </div>
+            
+            <!-- Log Viewer -->
+            <div style="background: #1E1E1E; border-radius: 6px; overflow: hidden;">
+                <div style="background: #2D2D2D; padding: 10px 16px; display: flex; justify-content: space-between;">
+                    <span style="font-size: 13px; color: #CCC; font-weight: 500;" id="logAgentTitle">AGENT-001 运行日志</span>
+                    <span style="font-size: 12px; color: #888;">最新 100 条</span>
+                </div>
+                <div style="max-height: 400px; overflow-y: auto; font-family: 'SF Mono', monospace; font-size: 13px;" id="logContent">
+                    <div style="padding: 8px 16px; border-bottom: 1px solid #333; background: #252526;">
+                        <span style="color: #888;">10:23:01</span>
+                        <span style="color: #CCC; margin-left: 12px;">[INFO] Agent 启动成功</span>
+                    </div>
+                    <div style="padding: 8px 16px; border-bottom: 1px solid #333; background: #252526;">
+                        <span style="color: #888;">10:23:02</span>
+                        <span style="color: #CCC; margin-left: 12px;">[INFO] 加载配置参数...</span>
+                    </div>
+                    <div style="padding: 8px 16px; border-bottom: 1px solid #333; background: #252526;">
+                        <span style="color: #888;">10:23:03</span>
+                        <span style="color: #CCC; margin-left: 12px;">[INFO] 连接 Facebook API</span>
+                    </div>
+                    <div style="padding: 8px 16px; border-bottom: 1px solid #333; background: #252526;">
+                        <span style="color: #888;">10:23:05</span>
+                        <span style="color: #CCC; margin-left: 12px;">[INFO] 开始扫描群组: OFW Philippines Group</span>
+                    </div>
+                    <div style="padding: 8px 16px; border-bottom: 1px solid #333; background: #1F3C1F;">
+                        <span style="color: #888;">10:23:08</span>
+                        <span style="color: #89D185; margin-left: 12px;">[SUCCESS] 发现 3 条潜在意向帖子</span>
+                    </div>
+                    <div style="padding: 8px 16px; border-bottom: 1px solid #333; background: #252526;">
+                        <span style="color: #888;">10:23:10</span>
+                        <span style="color: #CCC; margin-left: 12px;">[INFO] 开始私信触达...</span>
+                    </div>
+                    <div style="padding: 8px 16px; border-bottom: 1px solid #333; background: #1F3C1F;">
+                        <span style="color: #888;">10:23:12</span>
+                        <span style="color: #89D185; margin-left: 12px;">[SUCCESS] ✓ 任务执行完成</span>
+                    </div>
+                    <div style="padding: 8px 16px; border-bottom: 1px solid #333; background: #252526;">
+                        <span style="color: #888;">09:45:01</span>
+                        <span style="color: #CCC; margin-left: 12px;">[INFO] Agent 启动成功</span>
+                    </div>
+                    <div style="padding: 8px 16px; border-bottom: 1px solid #333; background: #3C1F1F;">
+                        <span style="color: #888;">08:30:45</span>
+                        <span style="color: #F48771; margin-left: 12px;">[ERROR] API 连接超时 (timeout after 30s)</span>
+                    </div>
+                    <div style="padding: 8px 16px; border-bottom: 1px solid #333; background: #3C1F1F;">
+                        <span style="color: #888;">08:30:46</span>
+                        <span style="color: #F48771; margin-left: 12px;">[ERROR] 重试第 1 次...</span>
+                    </div>
+                    <div style="padding: 8px 16px; background: #252526;">
+                        <span style="color: #888;">08:00:00</span>
+                        <span style="color: #CCC; margin-left: 12px;">[INFO] Heartbeat 检查: 正常</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="drawer-footer">
+            <button class="btn btn-secondary" onclick="closeLogDrawer()">关闭</button>
         </div>
     </div>
 
@@ -1274,7 +1492,7 @@
             const toast = document.createElement('div');
             toast.className = `toast toast-${type}`;
             
-            const icon = type === 'success' ? '✓' : '✕';
+            const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : '⚠';
             toast.innerHTML = `
                 <span class="toast-icon">${icon}</span>
                 <span class="toast-message">${message}</span>
@@ -1284,6 +1502,9 @@
             container.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
+        
+        // ========== Current Agent ID ========== 
+        let currentAgentId = '';
         
         // ========== Create Drawer ========== 
         function openCreateDrawer() {
@@ -1310,11 +1531,6 @@
         
         function toggleSkill(el) {
             el.classList.toggle('selected');
-            if (el.classList.contains('selected')) {
-                el.innerHTML = '<span>✓</span> ' + el.textContent.trim();
-            } else {
-                el.innerHTML = '<span></span> ' + el.textContent.replace('✓', '').trim();
-            }
         }
         
         function createAgent() {
@@ -1332,6 +1548,8 @@
         
         // ========== Detail Drawer ========== 
         function openDetailDrawer(agentId) {
+            currentAgentId = agentId;
+            document.getElementById('detailAgentId').textContent = agentId;
             document.getElementById('detailDrawerOverlay').classList.add('active');
             document.getElementById('detailDrawer').classList.add('active');
         }
@@ -1339,6 +1557,49 @@
         function closeDetailDrawer() {
             document.getElementById('detailDrawerOverlay').classList.remove('active');
             document.getElementById('detailDrawer').classList.remove('active');
+        }
+        
+        // ========== Config Drawer ========== 
+        function openConfigDrawer(agentId) {
+            currentAgentId = agentId;
+            closeDetailDrawer();
+            document.getElementById('configAgentId').value = agentId;
+            document.getElementById('configDrawerOverlay').classList.add('active');
+            document.getElementById('configDrawer').classList.add('active');
+            showToast(`正在编辑 ${agentId} 的配置`, 'success');
+        }
+        
+        function closeConfigDrawer() {
+            document.getElementById('configDrawerOverlay').classList.remove('active');
+            document.getElementById('configDrawer').classList.remove('active');
+        }
+        
+        function saveConfig() {
+            showToast(`配置已保存`, 'success');
+            closeConfigDrawer();
+        }
+        
+        // ========== Log Drawer ========== 
+        function openLogDrawer(agentId) {
+            currentAgentId = agentId;
+            closeDetailDrawer();
+            closeConfigDrawer();
+            document.getElementById('logAgentTitle').textContent = `${agentId} 运行日志`;
+            document.getElementById('logDrawerOverlay').classList.add('active');
+            document.getElementById('logDrawer').classList.add('active');
+        }
+        
+        function closeLogDrawer() {
+            document.getElementById('logDrawerOverlay').classList.remove('active');
+            document.getElementById('logDrawer').classList.remove('active');
+        }
+        
+        function refreshLogs() {
+            showToast('日志已刷新', 'success');
+        }
+        
+        function downloadLogs() {
+            showToast('日志文件已开始下载', 'success');
         }
         
         // ========== Agent Actions ========== 
@@ -1350,11 +1611,24 @@
             showToast(`Agent ${agentId} 已停止`, 'success');
         }
         
+        function pauseAgent(agentId) {
+            showToast(`Agent ${agentId} 已暂停`, 'success');
+        }
+        
+        function deleteAgent(agentId) {
+            if (confirm(`确认删除 Agent ${agentId}？此操作不可恢复。`)) {
+                showToast(`Agent ${agentId} 已删除`, 'success');
+                closeDetailDrawer();
+            }
+        }
+        
         // ========== Keyboard ========== 
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closeCreateDrawer();
                 closeDetailDrawer();
+                closeConfigDrawer();
+                closeLogDrawer();
             }
         });
     </script>
