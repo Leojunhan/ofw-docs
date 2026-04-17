@@ -1251,6 +1251,366 @@
             color: white;
         }
         
+        /* ========== Modal 弹窗组件 ========== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal {
+            background: white;
+            border-radius: 12px;
+            max-width: 480px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transform: translateY(-20px) scale(0.95);
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active .modal {
+            transform: translateY(0) scale(1);
+        }
+        
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+        }
+        
+        .modal-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 16px;
+        }
+        
+        .modal-icon.warning {
+            background: var(--danger-bg);
+            color: var(--danger);
+        }
+        
+        .modal-icon.info {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        
+        .modal-icon.success {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+        
+        .modal-title-group {
+            flex: 1;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .modal-subtitle {
+            font-size: 14px;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+        }
+        
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--bg-page);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-tertiary);
+        }
+        
+        .modal-close:hover {
+            background: var(--danger-bg);
+            color: var(--danger);
+        }
+        
+        .modal-body {
+            padding: 24px;
+        }
+        
+        .modal-message {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .modal-warning-box {
+            background: var(--danger-bg);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .modal-warning-icon {
+            color: var(--danger);
+            font-size: 18px;
+        }
+        
+        .modal-warning-text {
+            font-size: 13px;
+            color: var(--danger);
+            line-height: 1.5;
+        }
+        
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        
+        /* ========== Empty State 空状态组件 ========== */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 40px;
+            text-align: center;
+        }
+        
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            background: var(--bg-page);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: var(--text-tertiary);
+            margin-bottom: 20px;
+        }
+        
+        .empty-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .empty-description {
+            font-size: 14px;
+            color: var(--text-tertiary);
+            max-width: 320px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        
+        .empty-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        /* ========== Pagination 分页组件 ========== */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-top: 20px;
+        }
+        
+        .pagination-info {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .pagination-info strong {
+            color: var(--text-primary);
+        }
+        
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .pagination-btn {
+            min-width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: white;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .pagination-btn:hover:not(.disabled):not(.active) {
+            background: var(--bg-page);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .pagination-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+        
+        .pagination-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .pagination-ellipsis {
+            color: var(--text-tertiary);
+            padding: 0 4px;
+        }
+        
+        .pagination-jumper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .pagination-jumper-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .pagination-jumper-input {
+            width: 60px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            padding: 0 12px;
+            font-size: 14px;
+            color: var(--text-primary);
+            text-align: center;
+        }
+        
+        .pagination-jumper-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .pagination-per-page {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .pagination-per-page-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .pagination-per-page-select {
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            padding: 0 12px;
+            font-size: 14px;
+            color: var(--text-primary);
+            background: white;
+            cursor: pointer;
+        }
+        
+        /* ========== Tooltip 提示组件 ========== */
+        .tooltip-trigger {
+            position: relative;
+            cursor: help;
+        }
+        
+        .tooltip {
+            position: fixed;
+            background: #1E1E1E;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            max-width: 240px;
+            z-index: 3000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .tooltip.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .tooltip::before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+        }
+        
+        .tooltip.tooltip-top::before {
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px 6px 0;
+            border-color: #1E1E1E transparent transparent;
+        }
+        
+        .tooltip.tooltip-bottom::before {
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 0 6px 6px;
+            border-color: transparent transparent #1E1E1E;
+        }
+        
+        .tooltip-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .tooltip-content {
+            line-height: 1.4;
+        }
+            color: white;
+        }
+        
         .skill-exec-drawer {
             z-index: 1002;
         }
@@ -1405,11 +1765,11 @@
                                 </td>
                                 <td>
                                     <div class="skills-sequence">
-                                        <span class="skill-icon success" onclick="openSkillExecDrawer('SKILL-001', 'FB社群监控', 'success')">✓</span>
+                                        <span class="skill-icon success" data-skill-name="FB社群监控" onclick="openSkillExecDrawer('SKILL-001', 'FB社群监控', 'success')">✓</span>
                                         <span class="skill-arrow">→</span>
-                                        <span class="skill-icon success" onclick="openSkillExecDrawer('SKILL-002', '意图识别', 'success')">✓</span>
+                                        <span class="skill-icon success" data-skill-name="意图识别" onclick="openSkillExecDrawer('SKILL-002', '意图识别', 'success')">✓</span>
                                         <span class="skill-arrow">→</span>
-                                        <span class="skill-icon success" onclick="openSkillExecDrawer('SKILL-003', '私信触达', 'success')">✓</span>
+                                        <span class="skill-icon success" data-skill-name="私信触达" onclick="openSkillExecDrawer('SKILL-003', '私信触达', 'success')">✓</span>
                                     </div>
                                 </td>
                                 <td>
@@ -1438,11 +1798,11 @@
                                 </td>
                                 <td>
                                     <div class="skills-sequence">
-                                        <span class="skill-icon success">✓</span>
+                                        <span class="skill-icon success" data-skill-name="数据预处理" onclick="openSkillExecDrawer('SKILL-010', '数据预处理', 'success')">✓</span>
                                         <span class="skill-arrow">→</span>
-                                        <span class="skill-icon running">●</span>
+                                        <span class="skill-icon running" data-skill-name="意图识别">●</span>
                                         <span class="skill-arrow">→</span>
-                                        <span class="skill-icon pending">○</span>
+                                        <span class="skill-icon pending" data-skill-name="结果输出">○</span>
                                     </div>
                                 </td>
                                 <td>
@@ -1484,9 +1844,9 @@
                                 </td>
                                 <td>
                                     <div class="skills-sequence">
-                                        <span class="skill-icon success">✓</span>
+                                        <span class="skill-icon success" data-skill-name="反欺诈检测" onclick="openSkillExecDrawer('SKILL-004', '反欺诈检测', 'success')">✓</span>
                                         <span class="skill-arrow">→</span>
-                                        <span class="skill-icon success">✓</span>
+                                        <span class="skill-icon success" data-skill-name="信用评分" onclick="openSkillExecDrawer('SKILL-005', '信用评分', 'success')">✓</span>
                                     </div>
                                 </td>
                                 <td>
@@ -1496,7 +1856,7 @@
                                     </span>
                                 </td>
                                 <td>1.5s</td>
-                                <td>2026-04-16 09:58 PHT</td>
+                                <td>2026-04-16 09:58</td>
                                 <td>
                                     <div class="action-buttons">
                                         <button class="btn btn-secondary btn-sm" onclick="openDrawer('EXEC-20260416-003', '风控预审 Agent', 'success')">
@@ -1515,13 +1875,13 @@
                                 </td>
                                 <td>
                                     <div class="skills-sequence">
-                                        <span class="skill-icon success">✓</span>
+                                        <span class="skill-icon success" data-skill-name="还款提醒" onclick="openSkillExecDrawer('SKILL-006', '还款提醒', 'success')">✓</span>
                                         <span class="skill-arrow">→</span>
-                                        <span class="skill-icon success">✓</span>
+                                        <span class="skill-icon success" data-skill-name="逾期预警" onclick="openSkillExecDrawer('SKILL-007', '逾期预警', 'success')">✓</span>
                                         <span class="skill-arrow">→</span>
-                                        <span class="skill-icon failed">✕</span>
+                                        <span class="skill-icon failed" data-skill-name="数据写入" onclick="openSkillExecDrawer('SKILL-008', '数据写入', 'failed')">✕</span>
                                     </div>
-                                    <div class="skill-failed-reason">数据写入失败</div>
+                                    <div class="skill-failed-reason">API 连接超时</div>
                                 </td>
                                 <td>
                                     <span class="status-badge failed">
@@ -1552,7 +1912,7 @@
                                 </td>
                                 <td>
                                     <div class="skills-sequence">
-                                        <span class="skill-icon failed">✕</span>
+                                        <span class="skill-icon failed" data-skill-name="社群连接" onclick="openSkillExecDrawer('SKILL-009', '社群连接', 'failed')">✕</span>
                                     </div>
                                     <div class="skill-failed-reason">API 连接超时</div>
                                 </td>
@@ -1607,17 +1967,63 @@
                         </tbody>
                     </table>
                     
-                    <!-- 分页 -->
-                    <div class="pagination">
-                        <div class="pagination-info">显示 1-6 共 1,234 条</div>
+                    <!-- Pagination 分页组件 -->
+                    <div class="pagination-container" id="paginationContainer">
+                        <div class="pagination-info">
+                            显示 <strong>1-10</strong> 共 <strong>1,234</strong> 条
+                        </div>
                         <div class="pagination-controls">
-                            <button class="page-btn" disabled>← 上一页</button>
-                            <button class="page-btn active">1</button>
-                            <button class="page-btn">2</button>
-                            <button class="page-btn">3</button>
-                            <button class="page-btn">...</button>
-                            <button class="page-btn">205</button>
-                            <button class="page-btn">下一页 →</button>
+                            <button class="pagination-btn disabled" id="prevPageBtn" onclick="goToPrevPage()">
+                                ←
+                            </button>
+                            <button class="pagination-btn active" onclick="goToPage(1)">1</button>
+                            <button class="pagination-btn" onclick="goToPage(2)">2</button>
+                            <button class="pagination-btn" onclick="goToPage(3)">3</button>
+                            <span class="pagination-ellipsis">...</span>
+                            <button class="pagination-btn" onclick="goToPage(124)">124</button>
+                            <button class="pagination-btn" id="nextPageBtn" onclick="goToNextPage()">
+                                →
+                            </button>
+                        </div>
+                        <div class="pagination-jumper">
+                            <span class="pagination-jumper-label">跳至</span>
+                            <input type="number" class="pagination-jumper-input" id="pageJumperInput" min="1" max="124" value="1" onkeypress="handlePageJump(event)">
+                            <span class="pagination-jumper-label">页</span>
+                        </div>
+                        <div class="pagination-per-page">
+                            <span class="pagination-per-page-label">每页</span>
+                            <select class="pagination-per-page-select" id="perPageSelect" onchange="changePerPage(this.value)">
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            <span class="pagination-per-page-label">条</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Empty State 空状态组件（无数据时显示） -->
+                    <div class="empty-state" id="emptyState" style="display: none;">
+                        <div class="empty-icon">📋</div>
+                        <div class="empty-title">暂无执行记录</div>
+                        <div class="empty-description">
+                            当前筛选条件下没有找到执行记录，请尝试调整筛选条件或创建新的执行任务。
+                        </div>
+                        <div class="empty-actions">
+                            <button class="btn btn-secondary" onclick="clearFilters()">清除筛选</button>
+                            <button class="btn btn-primary" onclick="createNewTask()">创建执行任务</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Empty State - 搜索无结果 -->
+                    <div class="empty-state" id="searchEmptyState" style="display: none;">
+                        <div class="empty-icon">🔍</div>
+                        <div class="empty-title">未找到匹配结果</div>
+                        <div class="empty-description">
+                            搜索 "<span id="searchKeyword"></span>" 未找到任何执行记录，请尝试其他关键词。
+                        </div>
+                        <div class="empty-actions">
+                            <button class="btn btn-secondary" onclick="clearSearch()">清除搜索</button>
                         </div>
                     </div>
                 </div>
@@ -1904,6 +2310,83 @@
         </div>
     </div>
 
+    <!-- Modal 弹窗 - 删除确认 -->
+    <div class="modal-overlay" id="deleteModalOverlay" onclick="closeDeleteModal()">
+        <div class="modal" id="deleteModal">
+            <div class="modal-header">
+                <div class="modal-icon warning">⚠️</div>
+                <div class="modal-title-group">
+                    <div class="modal-title">确认删除执行记录？</div>
+                    <div class="modal-subtitle" id="deleteModalSubtitle">EXEC-20260416-001</div>
+                </div>
+                <button class="modal-close" onclick="closeDeleteModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message">删除后，该执行记录及其关联的日志、结果数据将无法恢复。</p>
+                <div class="modal-warning-box">
+                    <span class="modal-warning-icon">⚠️</span>
+                    <span class="modal-warning-text">此操作不可撤销，请确认是否继续。</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">取消</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">确认删除</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 弹窗 - 重试确认 -->
+    <div class="modal-overlay" id="retryModalOverlay" onclick="closeRetryModal()">
+        <div class="modal" id="retryModal">
+            <div class="modal-header">
+                <div class="modal-icon info">🔄</div>
+                <div class="modal-title-group">
+                    <div class="modal-title">确认重试执行？</div>
+                    <div class="modal-subtitle" id="retryModalSubtitle">EXEC-20260416-001</div>
+                </div>
+                <button class="modal-close" onclick="closeRetryModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message">重新执行该任务将使用相同的输入参数和配置。之前失败的 Skill 将重新运行。</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeRetryModal()">取消</button>
+                <button class="btn btn-success" id="confirmRetryBtn">确认重试</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 弹窗 - 取消运行 -->
+    <div class="modal-overlay" id="cancelModalOverlay" onclick="closeCancelModal()">
+        <div class="modal" id="cancelModal">
+            <div class="modal-header">
+                <div class="modal-icon warning">⏹</div>
+                <div class="modal-title-group">
+                    <div class="modal-title">确认取消执行？</div>
+                    <div class="modal-subtitle" id="cancelModalSubtitle">EXEC-20260416-002</div>
+                </div>
+                <button class="modal-close" onclick="closeCancelModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message">取消执行将中断正在运行的 Skill，已完成的步骤结果将保留。</p>
+                <div class="modal-warning-box">
+                    <span class="modal-warning-icon">⚠️</span>
+                    <span class="modal-warning-text">取消后需要手动重试才能继续执行。</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeCancelModal()">继续执行</button>
+                <button class="btn btn-danger" id="confirmCancelBtn">确认取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tooltip 提示框 -->
+    <div class="tooltip tooltip-bottom" id="tooltip">
+        <div class="tooltip-title" id="tooltipTitle"></div>
+        <div class="tooltip-content" id="tooltipContent"></div>
+    </div>
+
     <!-- Toast 通知容器 -->
     <div class="toast-container" id="toastContainer"></div>
 
@@ -2041,42 +2524,206 @@
         
         // ========== 操作函数 ==========
         function retryTask(execId) {
-            const btn = event.target;
-            setButtonLoading(btn, true);
-            
-            // 模拟 API 调用
-            setTimeout(() => {
-                setButtonLoading(btn, false);
-                showToast(`任务 ${execId} 已开始重试`, 'success');
-                closeDrawer();
-                
-                // 模拟更新表格状态
-                // 实际应用中会通过 WebSocket 或轮询更新
-            }, 1500);
+            openRetryModal(execId);
         }
         
         function cancelTask(execId) {
-            const btn = event.target;
-            setButtonLoading(btn, true);
-            
-            setTimeout(() => {
-                setButtonLoading(btn, false);
-                showToast(`任务 ${execId} 已取消`, 'warning');
-                closeDrawer();
-            }, 1000);
+            openCancelModal(execId);
         }
         
         function deleteTask(execId) {
-            if (confirm(`确认删除执行记录 ${execId}？此操作不可恢复。`)) {
-                const btn = event.target;
-                setButtonLoading(btn, true);
-                
-                setTimeout(() => {
-                    setButtonLoading(btn, false);
-                    showToast(`执行记录 ${execId} 已删除`, 'success');
-                    closeDrawer();
-                }, 1000);
+            openDeleteModal(execId);
+        }
+        
+        // ========== Modal 弹窗功能 ========== 
+        function openDeleteModal(execId) {
+            document.getElementById('deleteModalOverlay').classList.add('active');
+            document.getElementById('deleteModalSubtitle').textContent = execId;
+            document.getElementById('confirmDeleteBtn').onclick = function() {
+                confirmDelete(execId);
+            };
+        }
+        
+        function closeDeleteModal() {
+            document.getElementById('deleteModalOverlay').classList.remove('active');
+        }
+        
+        function confirmDelete(execId) {
+            closeDeleteModal();
+            showToast(`执行记录 ${execId} 已删除`, 'success');
+            closeDrawer();
+            // 实际删除逻辑...
+        }
+        
+        function openRetryModal(execId) {
+            document.getElementById('retryModalOverlay').classList.add('active');
+            document.getElementById('retryModalSubtitle').textContent = execId;
+            document.getElementById('confirmRetryBtn').onclick = function() {
+                confirmRetry(execId);
+            };
+        }
+        
+        function closeRetryModal() {
+            document.getElementById('retryModalOverlay').classList.remove('active');
+        }
+        
+        function confirmRetry(execId) {
+            closeRetryModal();
+            showToast(`执行记录 ${execId} 开始重试`, 'success');
+            closeDrawer();
+            // 实际重试逻辑...
+        }
+        
+        function openCancelModal(execId) {
+            document.getElementById('cancelModalOverlay').classList.add('active');
+            document.getElementById('cancelModalSubtitle').textContent = execId;
+            document.getElementById('confirmCancelBtn').onclick = function() {
+                confirmCancel(execId);
+            };
+        }
+        
+        function closeCancelModal() {
+            document.getElementById('cancelModalOverlay').classList.remove('active');
+        }
+        
+        function confirmCancel(execId) {
+            closeCancelModal();
+            showToast(`执行记录 ${execId} 已取消`, 'warning');
+            closeDrawer();
+            // 实际取消逻辑...
+        }
+        
+        // ========== Pagination 分页功能 ========== 
+        let currentPage = 1;
+        let totalPages = 124;
+        let perPage = 10;
+        
+        function goToPage(page) {
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            updatePaginationUI();
+            showToast(`已跳转到第 ${page} 页`, 'success');
+            // 实际数据加载逻辑...
+        }
+        
+        function goToPrevPage() {
+            if (currentPage > 1) {
+                goToPage(currentPage - 1);
             }
+        }
+        
+        function goToNextPage() {
+            if (currentPage < totalPages) {
+                goToPage(currentPage + 1);
+            }
+        }
+        
+        function handlePageJump(event) {
+            if (event.key === 'Enter') {
+                const page = parseInt(document.getElementById('pageJumperInput').value);
+                if (page >= 1 && page <= totalPages) {
+                    goToPage(page);
+                } else {
+                    showToast(`页码超出范围（1-${totalPages}）`, 'error');
+                }
+            }
+        }
+        
+        function changePerPage(value) {
+            perPage = parseInt(value);
+            totalPages = Math.ceil(1234 / perPage);
+            currentPage = 1;
+            updatePaginationUI();
+            showToast(`已切换为每页 ${perPage} 条`, 'success');
+            // 实际数据加载逻辑...
+        }
+        
+        function updatePaginationUI() {
+            // 更新页码按钮状态
+            document.getElementById('prevPageBtn').classList.toggle('disabled', currentPage === 1);
+            document.getElementById('nextPageBtn').classList.toggle('disabled', currentPage === totalPages);
+            document.getElementById('pageJumperInput').value = currentPage;
+            document.getElementById('pageJumperInput').max = totalPages;
+            
+            // 更新信息文字
+            const start = (currentPage - 1) * perPage + 1;
+            const end = Math.min(currentPage * perPage, 1234);
+            document.querySelector('.pagination-info').innerHTML = `显示 <strong>${start}-${end}</strong> 共 <strong>1,234</strong> 条`;
+        }
+        
+        // ========== Empty State 空状态功能 ========== 
+        function showEmptyState(type, keyword = '') {
+            document.getElementById('paginationContainer').style.display = 'none';
+            document.getElementById('executionTable').style.display = 'none';
+            
+            if (type === 'search') {
+                document.getElementById('searchEmptyState').style.display = 'flex';
+                document.getElementById('emptyState').style.display = 'none';
+                document.getElementById('searchKeyword').textContent = keyword;
+            } else {
+                document.getElementById('emptyState').style.display = 'flex';
+                document.getElementById('searchEmptyState').style.display = 'none';
+            }
+        }
+        
+        function hideEmptyState() {
+            document.getElementById('paginationContainer').style.display = 'flex';
+            document.getElementById('executionTable').style.display = 'table-row-group';
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('searchEmptyState').style.display = 'none';
+        }
+        
+        function clearFilters() {
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('agentFilter').value = '';
+            document.getElementById('dateFilter').value = '';
+            hideEmptyState();
+            showToast('筛选条件已清除', 'success');
+        }
+        
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            hideEmptyState();
+            showToast('搜索已清除', 'success');
+        }
+        
+        function createNewTask() {
+            showToast('请前往 Agent 管理页面创建执行任务', 'info');
+        }
+        
+        // ========== Tooltip 提示功能 ========== 
+        function showTooltip(element, title, content) {
+            const tooltip = document.getElementById('tooltip');
+            const tooltipTitle = document.getElementById('tooltipTitle');
+            const tooltipContent = document.getElementById('tooltipContent');
+            
+            tooltipTitle.textContent = title;
+            tooltipContent.textContent = content;
+            
+            // 计算位置
+            const rect = element.getBoundingClientRect();
+            tooltip.style.left = rect.left + rect.width / 2 - 120 + 'px';
+            tooltip.style.top = rect.bottom + 10 + 'px';
+            
+            tooltip.classList.add('active');
+        }
+        
+        function hideTooltip() {
+            document.getElementById('tooltip').classList.remove('active');
+        }
+        
+        // 为特定元素添加tooltip
+        function initTooltips() {
+            document.querySelectorAll('.skill-icon').forEach(icon => {
+                icon.addEventListener('mouseenter', function(e) {
+                    const skillName = this.getAttribute('data-skill-name') || 'Skill';
+                    const skillStatus = this.classList.contains('success') ? '执行成功' : 
+                                       this.classList.contains('failed') ? '执行失败' : 
+                                       this.classList.contains('running') ? '正在执行' : '等待执行';
+                    showTooltip(this, skillName, skillStatus);
+                });
+                icon.addEventListener('mouseleave', hideTooltip);
+            });
         }
         
         function downloadLog() {
@@ -2166,12 +2813,21 @@
         
         // ========== 键盘快捷键 ==========
         document.addEventListener('keydown', function(e) {
-            // ESC 关闭 drawer
+            // ESC 关闭所有弹窗和drawer
             if (e.key === 'Escape') {
                 closeDrawer();
                 closeAgentDrawer();
                 closeSkillExecDrawer();
+                closeDeleteModal();
+                closeRetryModal();
+                closeCancelModal();
+                hideTooltip();
             }
+        });
+        
+        // ========== 页面初始化 ========== 
+        document.addEventListener('DOMContentLoaded', function() {
+            initTooltips();
         });
         
         // ========== Agent Drawer ========== 
@@ -2181,8 +2837,9 @@
             currentExecId = agentId;
             document.getElementById('agentDrawerOverlay').classList.add('active');
             document.getElementById('agentDrawer').classList.add('active');
-            document.getElementById('agentDrawerTitle').textContent = agentName || 'Agent 详情';
-            document.getElementById('agentDrawerId').textContent = agentId;
+            document.getElementById('agentQuickTitle').textContent = agentName || 'Agent 详情';
+            document.getElementById('agentQuickId').textContent = agentId;
+            document.getElementById('agentQuickName').textContent = agentName || '';
             showToast(`正在查看 ${agentId}`, 'success');
         }
         
