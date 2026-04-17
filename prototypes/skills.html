@@ -322,6 +322,232 @@
         .toast-message { font-size: 14px; color: var(--text-primary); }
         .toast-close { color: var(--text-tertiary); cursor: pointer; font-size: 18px; margin-left: auto; }
         
+        /* ========== Drawer 抽屉组件 ========== */
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .drawer-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: -480px;
+            width: 480px;
+            height: 100vh;
+            background: white;
+            z-index: 1001;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+        }
+        
+        .drawer.active {
+            right: 0;
+        }
+        
+        .drawer-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .drawer-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .drawer-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--bg-page);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-tertiary);
+        }
+        
+        .drawer-close:hover {
+            background: var(--danger-light);
+            color: var(--danger);
+        }
+        
+        .drawer-body {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+        
+        .drawer-section {
+            margin-bottom: 24px;
+        }
+        
+        .drawer-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .drawer-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        
+        .drawer-meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .drawer-meta-label {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+        
+        .drawer-meta-value {
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+        
+        .drawer-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        
+        /* ========== Form 表单样式 ========== */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .form-input {
+            width: 100%;
+            height: 40px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            padding: 0 12px;
+            font-size: 14px;
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+        
+        .form-textarea {
+            width: 100%;
+            min-height: 100px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            padding: 12px;
+            font-size: 14px;
+            color: var(--text-primary);
+            resize: vertical;
+            transition: all 0.2s;
+        }
+        
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+        
+        .form-select {
+            width: 100%;
+            height: 40px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            padding: 0 12px;
+            font-size: 14px;
+            color: var(--text-primary);
+            background: white;
+            cursor: pointer;
+        }
+        
+        .form-checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        
+        .form-checkbox input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+        
+        .form-checkbox span {
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+        
+        .form-hint {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+        }
+        
+        /* ========== Tag 标签样式 ========== */
+        .agent-tag {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 12px;
+            margin-right: 6px;
+        }
+        
+        .agent-tag:hover {
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+        }
+        
         /* Responsive */
         @media (max-width: 1200px) {
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
@@ -331,6 +557,7 @@
             .sidebar { width: 200px; }
             .main-content { margin-left: 200px; }
             .stats-grid { grid-template-columns: 1fr; }
+            .drawer { width: 100%; }
         }
     </style>
 </head>
@@ -451,7 +678,7 @@
                                     <div class="skill-name">
                                         <div class="skill-icon blue">📱</div>
                                         <div class="skill-info">
-                                            <div class="skill-title">FB 社群监控</div>
+                                            <div class="skill-title" style="cursor: pointer;" onclick="openSkillDetailDrawer('SKILL-001', 'FB 社群监控')">FB 社群监控</div>
                                             <div class="skill-desc">监控 Facebook 群组借贷相关内容</div>
                                         </div>
                                     </div>
@@ -622,6 +849,193 @@
         </main>
     </div>
 
+    <!-- Skill Detail Drawer -->
+    <div class="drawer-overlay" id="skillDetailDrawerOverlay" onclick="closeSkillDetailDrawer()"></div>
+    <div class="drawer" id="skillDetailDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title" id="skillDetailTitle">Skill 详情</span>
+            <button class="drawer-close" onclick="closeSkillDetailDrawer()">✕</button>
+        </div>
+        <div class="drawer-body">
+            <div class="drawer-section">
+                <div class="drawer-section-title">📋 基本信息</div>
+                <div class="drawer-meta-grid">
+                    <div class="drawer-meta-item">
+                        <div class="drawer-meta-label">Skill ID</div>
+                        <div class="drawer-meta-value" id="skillDetailId" style="font-family: 'SF Mono', monospace; font-size: 13px;">SKILL-001</div>
+                    </div>
+                    <div class="drawer-meta-item">
+                        <div class="drawer-meta-label">Skill 名称</div>
+                        <div class="drawer-meta-value" id="skillDetailName">FB 社群监控</div>
+                    </div>
+                    <div class="drawer-meta-item">
+                        <div class="drawer-meta-label">类型</div>
+                        <div class="drawer-meta-value" id="skillDetailType">数据采集</div>
+                    </div>
+                    <div class="drawer-meta-item">
+                        <div class="drawer-meta-label">状态</div>
+                        <div class="drawer-meta-value">
+                            <span class="status-badge success" id="skillDetailStatus"><span class="status-dot"></span>✓ 已启用</span>
+                        </div>
+                    </div>
+                    <div class="drawer-meta-item">
+                        <div class="drawer-meta-label">创建时间</div>
+                        <div class="drawer-meta-value" id="skillDetailCreatedAt">2026-04-01 10:00</div>
+                    </div>
+                    <div class="drawer-meta-item">
+                        <div class="drawer-meta-label">最后修改</div>
+                        <div class="drawer-meta-value" id="skillDetailUpdatedAt">2026-04-15 14:30</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="drawer-section">
+                <div class="drawer-section-title">📝 功能描述</div>
+                <div style="background: var(--bg-page); padding: 12px; border-radius: 8px; font-size: 14px; color: var(--text-secondary); line-height: 1.6;">
+                    监控指定 Facebook 群组的帖子内容，通过关键词匹配识别潜在借贷需求用户，提取帖子内容和用户信息用于后续意图分析。
+                </div>
+            </div>
+            
+            <div class="drawer-section">
+                <div class="drawer-section-title">🤖 绑定 Agent</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <span class="agent-tag" onclick="goToAgent('AGENT-001')">获客流程 Agent</span>
+                    <span class="agent-tag" onclick="goToAgent('AGENT-005')">FB 社群监控 Agent</span>
+                </div>
+            </div>
+            
+            <div class="drawer-section">
+                <div class="drawer-section-title">📊 执行统计（近7天）</div>
+                <div class="drawer-meta-grid">
+                    <div class="drawer-meta-item">
+                        <div class="drawer-meta-label">执行次数</div>
+                        <div class="drawer-meta-value" style="font-weight: 600;">156 次</div>
+                    </div>
+                    <div class="drawer-meta-item">
+                        <div class="drawer-meta-label">成功率</div>
+                        <div class="drawer-meta-value" style="color: var(--success); font-weight: 600;">98.7%</div>
+                    </div>
+                    <div class="drawer-meta-item">
+                        <div class="drawer-meta-label">平均耗时</div>
+                        <div class="drawer-meta-value">0.8s</div>
+                    </div>
+                    <div class="drawer-meta-item">
+                        <div class="drawer-meta-label">发现意向</div>
+                        <div class="drawer-meta-value" style="color: var(--primary); font-weight: 600;">423 个</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="drawer-section">
+                <div class="drawer-section-title">⚙️ 参数配置</div>
+                <div style="background: #1E1E1E; padding: 12px; border-radius: 8px; font-family: 'SF Mono', monospace; font-size: 12px; color: #CCC;">
+                    <div><span style="color: #89D185;">"target_groups"</span>: ["OFW Philippines 2024", "Filipino Workers HK"]</div>
+                    <div><span style="color: #89D185;">"keywords"</span>: ["借贷", "贷款", "急需资金", "pautang"]</div>
+                    <div><span style="color: #89D185;">"scan_interval"</span>: <span style="color: #D19A66;">30</span></div>
+                    <div><span style="color: #89D185;">"max_results"</span>: <span style="color: #D19A66;">50</span></div>
+                </div>
+            </div>
+            
+            <div class="drawer-section">
+                <div class="drawer-section-title">🔗 最近执行记录</div>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: var(--bg-page); border-radius: 6px; cursor: pointer;" onclick="goToExecution('EXEC-20260416-001')">
+                        <span style="font-size: 13px; color: var(--text-primary);">EXEC-20260416-001</span>
+                        <span class="status-badge success" style="font-size: 12px;"><span class="status-dot"></span>✓</span>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: var(--bg-page); border-radius: 6px; cursor: pointer;" onclick="goToExecution('EXEC-20260416-003')">
+                        <span style="font-size: 13px; color: var(--text-primary);">EXEC-20260416-003</span>
+                        <span class="status-badge success" style="font-size: 12px;"><span class="status-dot"></span>✓</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="drawer-footer">
+            <button class="btn btn-secondary" onclick="closeSkillDetailDrawer()">关闭</button>
+            <button class="btn btn-secondary" onclick="openSkillEditDrawer(currentSkillId)">✏️ 编辑</button>
+            <button class="btn btn-primary" onclick="testSkill(currentSkillId)">▶️ 测试运行</button>
+        </div>
+    </div>
+
+    <!-- Skill Create/Edit Drawer -->
+    <div class="drawer-overlay" id="skillEditDrawerOverlay" onclick="closeSkillEditDrawer()"></div>
+    <div class="drawer" id="skillEditDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title" id="skillEditTitle">创建 Skill</span>
+            <button class="drawer-close" onclick="closeSkillEditDrawer()">✕</button>
+        </div>
+        <div class="drawer-body">
+            <div class="form-group">
+                <label class="form-label">Skill 名称 *</label>
+                <input type="text" class="form-input" id="skillNameInput" placeholder="输入 Skill 名称">
+                <div class="form-hint">建议使用简洁明了的名称，如"FB社群监控"、"意图识别"</div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">类型 *</label>
+                <select class="form-select" id="skillTypeSelect">
+                    <option value="">请选择类型</option>
+                    <option value="data-collection">数据采集</option>
+                    <option value="analysis">数据分析</option>
+                    <option value="communication">沟通触达</option>
+                    <option value="decision">决策判断</option>
+                    <option value="integration">系统集成</option>
+                    <option value="notification">通知提醒</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">功能描述 *</label>
+                <textarea class="form-textarea" id="skillDescInput" placeholder="描述该 Skill 的主要功能和用途"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">绑定 Agent</label>
+                <div class="form-checkbox-group">
+                    <label class="form-checkbox">
+                        <input type="checkbox" value="AGENT-001"> 获客流程 Agent
+                    </label>
+                    <label class="form-checkbox">
+                        <input type="checkbox" value="AGENT-002"> 意图分类 Agent
+                    </label>
+                    <label class="form-checkbox">
+                        <input type="checkbox" value="AGENT-003"> 风控预审 Agent
+                    </label>
+                    <label class="form-checkbox">
+                        <input type="checkbox" value="AGENT-004"> 贷后管理 Agent
+                    </label>
+                    <label class="form-checkbox">
+                        <input type="checkbox" value="AGENT-005"> FB 社群监控 Agent
+                    </label>
+                </div>
+                <div class="form-hint">选择可以调用此 Skill 的 Agent</div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">参数配置（JSON）</label>
+                <textarea class="form-textarea" id="skillConfigInput" style="font-family: 'SF Mono', monospace; background: #1E1E1E; color: #CCC;" placeholder='{
+  "param1": "value1",
+  "param2": 100
+}'></textarea>
+                <div class="form-hint">输入 Skill 运行时需要的参数配置</div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">超时设置（秒）</label>
+                <input type="number" class="form-input" id="skillTimeoutInput" value="60" min="10" max="600">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">重试次数</label>
+                <input type="number" class="form-input" id="skillRetryInput" value="3" min="0" max="5">
+            </div>
+        </div>
+        <div class="drawer-footer">
+            <button class="btn btn-secondary" onclick="closeSkillEditDrawer()">取消</button>
+            <button class="btn btn-primary" onclick="saveSkill()">💾 保存</button>
+        </div>
+    </div>
+
     <!-- Toast -->
     <div class="toast-container" id="toastContainer"></div>
 
@@ -641,6 +1055,99 @@
             container.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
+        
+        // ========== Skill Detail Drawer ========== 
+        let currentSkillId = '';
+        
+        function openSkillDetailDrawer(skillId, skillName) {
+            currentSkillId = skillId;
+            document.getElementById('skillDetailDrawerOverlay').classList.add('active');
+            document.getElementById('skillDetailDrawer').classList.add('active');
+            document.getElementById('skillDetailTitle').textContent = skillName + ' - 详情';
+            document.getElementById('skillDetailId').textContent = skillId;
+            document.getElementById('skillDetailName').textContent = skillName;
+            showToast(`正在查看 ${skillId}`, 'success');
+        }
+        
+        function closeSkillDetailDrawer() {
+            document.getElementById('skillDetailDrawerOverlay').classList.remove('active');
+            document.getElementById('skillDetailDrawer').classList.remove('active');
+        }
+        
+        // ========== Skill Create/Edit Drawer ========== 
+        function openSkillCreateDrawer() {
+            currentSkillId = '';
+            document.getElementById('skillEditDrawerOverlay').classList.add('active');
+            document.getElementById('skillEditDrawer').classList.add('active');
+            document.getElementById('skillEditTitle').textContent = '创建 Skill';
+            
+            // 清空表单
+            document.getElementById('skillNameInput').value = '';
+            document.getElementById('skillTypeSelect').value = '';
+            document.getElementById('skillDescInput').value = '';
+            document.getElementById('skillConfigInput').value = '';
+            document.querySelectorAll('#skillEditDrawer .form-checkbox input').forEach(cb => cb.checked = false);
+            
+            showToast('正在创建新 Skill', 'success');
+        }
+        
+        function openSkillEditDrawer(skillId) {
+            closeSkillDetailDrawer();
+            currentSkillId = skillId;
+            document.getElementById('skillEditDrawerOverlay').classList.add('active');
+            document.getElementById('skillEditDrawer').classList.add('active');
+            document.getElementById('skillEditTitle').textContent = '编辑 Skill';
+            
+            // 模拟加载已有数据
+            document.getElementById('skillNameInput').value = 'FB 社群监控';
+            document.getElementById('skillTypeSelect').value = 'data-collection';
+            document.getElementById('skillDescInput').value = '监控指定 Facebook 群组的帖子内容，通过关键词匹配识别潜在借贷需求用户。';
+            
+            showToast(`正在编辑 ${skillId}`, 'success');
+        }
+        
+        function closeSkillEditDrawer() {
+            document.getElementById('skillEditDrawerOverlay').classList.remove('active');
+            document.getElementById('skillEditDrawer').classList.remove('active');
+        }
+        
+        function saveSkill() {
+            const name = document.getElementById('skillNameInput').value;
+            const type = document.getElementById('skillTypeSelect').value;
+            const desc = document.getElementById('skillDescInput').value;
+            
+            if (!name || !type || !desc) {
+                showToast('请填写必填字段', 'error');
+                return;
+            }
+            
+            closeSkillEditDrawer();
+            showToast(currentSkillId ? `Skill ${currentSkillId} 已更新` : 'Skill 已创建', 'success');
+        }
+        
+        function testSkill(skillId) {
+            closeSkillDetailDrawer();
+            showToast(`Skill ${skillId} 开始测试运行`, 'success');
+        }
+        
+        // ========== 导航功能 ========== 
+        function goToAgent(agentId) {
+            showToast(`跳转到 ${agentId}`, 'success');
+            // 实际跳转到 agents.html
+        }
+        
+        function goToExecution(execId) {
+            showToast(`跳转到 ${execId}`, 'success');
+            // 实际跳转到 executions.html
+        }
+        
+        // ========== 键盘快捷键 ========== 
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeSkillDetailDrawer();
+                closeSkillEditDrawer();
+            }
+        });
     </script>
 </body>
 </html>
